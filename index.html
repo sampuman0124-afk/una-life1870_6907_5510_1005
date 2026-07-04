@@ -25,7 +25,7 @@
   // Firebase에 저장
   window.firebaseSave = async function(data) {
     try {
-      await setDoc(DOC_REF, { data: JSON.stringify(data) });
+      await setDoc(DOC_REF, { data: JSON.stringify(data), updatedAt: new Date().toISOString() }, { merge: true });
     } catch(e) {
       console.warn('Firebase 저장 실패, localStorage 사용:', e);
       localStorage.setItem('unaLifeData', JSON.stringify(data));
@@ -1544,6 +1544,27 @@ let appData = {
   mineEvents:[], bfEvents:[], experiences:[], moneyRecords:[], fixedExpenses:[], incomePlans:[], savingGoals:{}, piggyBank:[], diaries:{}, diaryPin:null
 };
 
+// 초기 불러오기 완료 전에는 Firebase 저장을 차단한다.
+// 네트워크/권한 문제로 빈 기본 데이터가 기존 Firebase 데이터를 덮어쓰는 사고를 막기 위한 안전장치.
+let dataLoaded = false;
+
+function normalizeAppData() {
+  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank'];
+  arrayKeys.forEach(k => { if(!Array.isArray(appData[k])) appData[k] = []; });
+  if(!appData.savingGoals || typeof appData.savingGoals !== 'object' || Array.isArray(appData.savingGoals)) appData.savingGoals = {};
+  if(!appData.diaries || typeof appData.diaries !== 'object' || Array.isArray(appData.diaries)) appData.diaries = {};
+  if(appData.diaryPin === undefined) appData.diaryPin = null;
+}
+
+function isMeaningfulData(data) {
+  if(!data || typeof data !== 'object') return false;
+  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank'];
+  const hasArrayData = arrayKeys.some(k => Array.isArray(data[k]) && data[k].length > 0);
+  const hasDiaryData = data.diaries && typeof data.diaries === 'object' && !Array.isArray(data.diaries) && Object.keys(data.diaries).length > 0;
+  const hasSettings = !!data.diaryPin || !!data.currentSemester || (data.savingGoals && typeof data.savingGoals === 'object' && Object.keys(data.savingGoals).length > 0);
+  return hasArrayData || hasDiaryData || hasSettings;
+}
+
 // ── 탭 전환 ──
 function switchTab(name) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -2028,11 +2049,7 @@ function renderGrades() {
   if(avgGradeEl) avgGradeEl.innerText = '-';
 }
 
-function saveAndRender() {
-  // Firebase + localStorage 동시 저장
-  localStorage.setItem('unaLifeData', JSON.stringify(appData));
-  if(window.firebaseSave) window.firebaseSave(appData);
-
+function renderAll() {
   // 투두
   document.getElementById('todo-list').innerHTML = appData.todos.length ?
     appData.todos.map(t=>`<div class="todo-item">
@@ -2118,6 +2135,28 @@ function saveAndRender() {
 }
 
 
+function saveAndRender() {
+  normalizeAppData();
+
+  // 초기 데이터 로딩이 완료되기 전에는 저장하지 않고 화면만 갱신한다.
+  if(!dataLoaded) {
+    console.warn('초기 데이터 로딩 전 저장 시도가 차단되었습니다.');
+    renderAll();
+    return;
+  }
+
+  const nextData = JSON.stringify(appData);
+  const previousData = localStorage.getItem('unaLifeData');
+
+  // 최근 로컬 백업 1개를 유지한다. 복구가 필요할 때 Application > Local Storage에서 확인 가능.
+  if(previousData && previousData !== nextData) {
+    localStorage.setItem('unaLifeData_autoBackup', previousData);
+  }
+
+  localStorage.setItem('unaLifeData', nextData);
+  if(window.firebaseSave) window.firebaseSave(appData);
+  renderAll();
+}
 
 function expStatusClass(s) {
   return {'방문 전':'s0','예약 완료':'s1','방문 완료':'s2','작성 중':'s3','검수/수정':'s4','완료':'s5'}[s]||'s0';
@@ -3188,31 +3227,63 @@ function importData(e) {
 
 // ── 초기화 ──
 async function loadData() {
-  // 로딩 표시
   showToast('데이터 불러오는 중...', '☁️', 2000);
+  let loaded = false;
+
   try {
     let saved = null;
+
     if(window.firebaseLoad) {
       saved = await window.firebaseLoad();
-    } else {
-      const local = localStorage.getItem('unaLifeData');
-      saved = local ? JSON.parse(local) : null;
     }
-    if(saved) {
+
+    // Firebase에서 의미 있는 데이터가 확인될 때만 appData를 교체한다.
+    if(isMeaningfulData(saved)) {
       appData = saved;
-      ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank','diaries']
-        .forEach(k => { if(!appData[k]) appData[k] = []; });
-      if(!appData.savingGoals) appData.savingGoals = {};
-      showToast('데이터 불러왔어요 ☁️', '✅', 2000);
+      normalizeAppData();
+      loaded = true;
+      showToast('Firebase 데이터를 불러왔어요 ☁️', '✅', 2000);
+    } else {
+      // Firebase가 비었거나 실패했을 때만 로컬 저장소를 확인한다.
+      const local = localStorage.getItem('unaLifeData');
+      if(local) {
+        const parsedLocal = JSON.parse(local);
+        if(isMeaningfulData(parsedLocal)) {
+          appData = parsedLocal;
+          normalizeAppData();
+          loaded = true;
+          showToast('로컬 데이터를 불러왔어요. 필요하면 백업 파일을 내려받으세요.', '✅', 3000);
+        }
+      }
     }
   } catch(e) {
     console.warn('로드 실패:', e);
-    const local = localStorage.getItem('unaLifeData');
-    if(local) {
-      try { appData = JSON.parse(local); } catch {}
+    try {
+      const local = localStorage.getItem('unaLifeData');
+      if(local) {
+        const parsedLocal = JSON.parse(local);
+        if(isMeaningfulData(parsedLocal)) {
+          appData = parsedLocal;
+          normalizeAppData();
+          loaded = true;
+          showToast('Firebase 오류로 로컬 데이터를 불러왔어요.', '⚠️', 3000);
+        }
+      }
+    } catch(localError) {
+      console.warn('로컬 데이터 로드 실패:', localError);
     }
   }
-  saveAndRender();
+
+  normalizeAppData();
+  dataLoaded = true;
+
+  // 중요: 초기 로드 직후에는 Firebase에 저장하지 않고 화면만 그린다.
+  // 빈 데이터가 기존 Firebase 데이터를 덮어쓰는 것을 방지한다.
+  renderAll();
+
+  if(!loaded) {
+    showToast('저장된 데이터를 찾지 못했습니다. 자동 덮어쓰기는 차단됐어요.', '⚠️', 4000);
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
