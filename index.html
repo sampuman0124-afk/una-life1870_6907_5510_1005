@@ -933,29 +933,6 @@ tr:hover td { background:rgba(160,120,80,.04); }
   <!-- ══ 캘린더 탭 ══ -->
   <div class="tab-content" id="tab-calendar">
 
-    <!-- 일정 추가 -->
-    <div class="card" style="margin-bottom:14px;">
-      <div class="card-title">➕ 일정 추가</div>
-      <div class="type-row">
-        <button class="type-btn active-mine" id="cal-type-mine" onclick="selectCalType('mine')">😶</button>
-        <button class="type-btn" id="cal-type-bf" onclick="selectCalType('bf')">🐍</button>
-      </div>
-      <div class="form-row">
-        <input type="text" id="cal-title" placeholder="일정 제목" style="flex:1;min-width:140px;">
-        <span class="form-label">시작</span>
-        <input type="date" id="cal-start">
-        <span class="form-label">종료</span>
-        <input type="date" id="cal-end">
-        <select id="cal-repeat" style="font-family:inherit;font-size:12px;padding:7px 8px;border:1px solid var(--line2);border-radius:8px;">
-          <option value="none">반복 없음</option>
-          <option value="weekly">매주</option>
-          <option value="monthly">매월</option>
-        </select>
-        <input type="color" id="cal-color" value="#A07850">
-        <button class="btn" onclick="addCalEvent()">추가</button>
-      </div>
-    </div>
-
     <div class="grid2">
       <!-- 캘린더 -->
       <div class="card">
@@ -1252,25 +1229,33 @@ tr:hover td { background:rgba(160,120,80,.04); }
 
     <!-- 고정지출 메모 -->
     <div class="card" style="margin-bottom:14px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-        <div class="card-title" style="font-size:14px;">📌 고정 지출 예산</div>
-        <span style="font-size:11px;color:var(--ink-soft);">매달 나가는 고정 비용</span>
+      <!-- 헤더 클릭으로 접기/펼치기 -->
+      <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;" onclick="toggleFixed()">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="card-title" style="font-size:14px;margin:0;">📌 고정 지출 예산</div>
+          <span id="fixed-total-mini" style="font-size:12px;font-weight:700;color:var(--accent);"></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-size:11px;color:var(--ink-soft);">매달 나가는 고정 비용</span>
+          <span id="fixed-toggle-icon" style="font-size:13px;color:var(--ink-soft);">▲</span>
+        </div>
       </div>
-      <!-- 고정지출 추가 -->
-      <div class="form-row" style="margin-bottom:8px;">
-        <input type="text" id="fixed-name" placeholder="항목명 (예: 관리비)" style="flex:1;min-width:100px;">
-        <input type="number" id="fixed-budget" placeholder="예산금액" min="0" style="width:110px;">
-        <span class="form-label">원</span>
-        <input type="text" id="fixed-memo" placeholder="메모 (예: 매월 25일)" style="flex:1;min-width:100px;">
-        <button class="btn btn-sm" onclick="addFixed()">추가</button>
-      </div>
-      <!-- 고정지출 목록 -->
-      <div id="fixed-list" style="min-height:30px;">
-        <p style="color:var(--ink-soft);font-size:12px;padding:4px 0;">고정 지출 항목을 추가해보세요</p>
-      </div>
-      <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;">
-        <span style="font-size:11.5px;color:var(--ink-soft);font-weight:600;">예산 합계</span>
-        <span id="fixed-total" style="font-family:'Nanum Myeongjo',serif;font-weight:800;color:var(--accent);font-size:15px;">0원</span>
+      <!-- 접히는 내용 -->
+      <div id="fixed-body" style="margin-top:10px;">
+        <div class="form-row" style="margin-bottom:8px;">
+          <input type="text" id="fixed-name" placeholder="항목명 (예: 관리비)" style="flex:1;min-width:100px;">
+          <input type="number" id="fixed-budget" placeholder="예산금액" min="0" style="width:110px;">
+          <span class="form-label">원</span>
+          <input type="text" id="fixed-memo" placeholder="메모 (예: 매월 25일)" style="flex:1;min-width:100px;">
+          <button class="btn btn-sm" onclick="addFixed()">추가</button>
+        </div>
+        <div id="fixed-list" style="min-height:30px;">
+          <p style="color:var(--ink-soft);font-size:12px;padding:4px 0;">고정 지출 항목을 추가해보세요</p>
+        </div>
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:11.5px;color:var(--ink-soft);font-weight:600;">예산 합계</span>
+          <span id="fixed-total" style="font-family:'Nanum Myeongjo',serif;font-weight:800;color:var(--accent);font-size:15px;">0원</span>
+        </div>
       </div>
     </div>
 
@@ -1308,15 +1293,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
       </div>
     </div>
 
-    <!-- 월별 그래프 -->
-    <div class="card" style="margin-bottom:14px;">
-      <div class="card-title" style="margin-bottom:12px;">📈 최근 6개월</div>
-      <div class="money-chart-legend">
-        <div class="money-chart-legend-item"><div class="money-chart-legend-dot" style="background:#4a9e7a"></div>수입</div>
-        <div class="money-chart-legend-item"><div class="money-chart-legend-dot" style="background:var(--rose)"></div>지출</div>
-      </div>
-      <div class="money-chart-wrap" id="money-chart"></div>
-    </div>
+
 
     <div class="grid2" style="margin-bottom:14px;">
       <!-- 카테고리별 지출 요약 -->
@@ -1520,18 +1497,27 @@ tr:hover td { background:rgba(160,120,80,.04); }
     <input type="hidden" id="pop-edit-id">
     <input type="hidden" id="pop-edit-type">
     <div class="type-row" id="pop-type-row">
-      <button class="type-btn active-mine" id="pop-type-mine" onclick="selectPopType('mine')">😶</button>
-      <button class="type-btn" id="pop-type-bf" onclick="selectPopType('bf')">🐍</button>
+      <button class="type-btn active-mine" id="pop-type-mine" onclick="selectPopType('mine')">😶 나의 일정</button>
+      <button class="type-btn" id="pop-type-bf" onclick="selectPopType('bf')">🐍 남친 일정</button>
     </div>
-    <div class="popup-field"><label>일정 제목</label><input type="text" id="pop-title"></div>
+    <div class="popup-field"><label>일정 제목</label><input type="text" id="pop-title" placeholder="제목을 입력하세요"></div>
     <div class="popup-field"><label>시작일</label><input type="date" id="pop-start"></div>
     <div class="popup-field"><label>종료일</label><input type="date" id="pop-end"></div>
+    <div class="popup-field" id="pop-repeat-field">
+      <label>반복</label>
+      <select id="pop-repeat" style="width:100%;font-family:inherit;font-size:13.5px;border:1px solid var(--line2);border-radius:9px;padding:8px 11px;">
+        <option value="none">반복 없음</option>
+        <option value="weekly">매주</option>
+        <option value="monthly">매월</option>
+      </select>
+    </div>
     <div class="popup-field" style="display:flex;align-items:center;gap:10px;">
       <label style="margin:0;">색상</label>
       <input type="color" id="pop-color" value="#A07850" style="width:40px;height:32px;border-radius:7px;border:1px solid var(--line2);padding:2px;cursor:pointer;">
     </div>
     <div class="popup-acts">
       <button class="save" id="pop-save-btn" onclick="savePopEvent()">등록</button>
+      <button id="pop-delete-btn" onclick="deletePopEvent()" style="display:none;background:var(--rose);color:#fff;border:none;border-radius:10px;padding:10px;cursor:pointer;font-family:inherit;font-weight:700;font-size:13.5px;">삭제</button>
       <button onclick="closePopup()">취소</button>
     </div>
   </div>
@@ -1750,14 +1736,21 @@ function addCalEvent() {
 }
 function openCalPopup(dateStr) {
   calPopType = 'mine';
-  document.getElementById('pop-type-mine').className = 'type-btn active-mine';
-  document.getElementById('pop-type-bf').className = 'type-btn';
-  document.getElementById('pop-color').value = '#A07850';
-  document.getElementById('cal-popup-date').innerText = `📅 ${dateStr} 일정 추가`;
+  selectPopType('mine');
+  document.getElementById('cal-popup-date').innerText = `📅 ${dateStr}`;
   document.getElementById('pop-title').value = '';
   document.getElementById('pop-start').value = dateStr;
   document.getElementById('pop-end').value = dateStr;
+  document.getElementById('pop-color').value = '#A07850';
+  const eid = document.getElementById('pop-edit-id'); if(eid) eid.value = '';
+  const etype = document.getElementById('pop-edit-type'); if(etype) etype.value = '';
+  const tr = document.getElementById('pop-type-row'); if(tr) tr.style.display = '';
+  const rf = document.getElementById('pop-repeat-field'); if(rf) rf.style.display = 'block';
+  const pr = document.getElementById('pop-repeat'); if(pr) pr.value = 'none';
+  const sb = document.getElementById('pop-save-btn'); if(sb) sb.innerText = '등록';
+  const db = document.getElementById('pop-delete-btn'); if(db) db.style.display = 'none';
   document.getElementById('cal-popup-bg').classList.add('open');
+  setTimeout(()=>{ const t=document.getElementById('pop-title'); if(t) t.focus(); }, 150);
 }
 function closePopup() {
   document.getElementById('cal-popup-bg').classList.remove('open');
@@ -1779,21 +1772,20 @@ function savePopEvent() {
   const editId = editIdEl ? editIdEl.value : '';
   const editType = editTypeEl ? editTypeEl.value : '';
 
+  const repeat = document.getElementById('pop-repeat')?.value || 'none';
   if(editId) {
-    // 수정 모드
     const list = editType==='mine' ? appData.mineEvents : appData.bfEvents;
     const idx = list.findIndex(x=>String(x.id)===String(editId));
-    if(idx!==-1) {
-      list[idx].title=title;
-      list[idx].startDate=start;
-      list[idx].endDate=end;
-      list[idx].color=color;
-    }
+    if(idx!==-1) { list[idx].title=title; list[idx].startDate=start; list[idx].endDate=end; list[idx].color=color; }
   } else {
-    // 추가 모드
-    const ev = { id:Date.now(), title, startDate:start, endDate:end, color };
-    if(calPopType==='mine') appData.mineEvents.push(ev);
-    else appData.bfEvents.push(ev);
+    const ev = { id:Date.now(), title, startDate:start, endDate:end, color, repeat };
+    const list = calPopType==='mine' ? appData.mineEvents : appData.bfEvents;
+    list.push(ev);
+    if(repeat !== 'none') {
+      const repeats = generateRepeatEvents(ev, repeat);
+      repeats.forEach(r=>list.push(r));
+      showToast(`반복 일정 ${repeats.length}개 추가됐어요! 🔁`,'🔁');
+    }
   }
   closePopup();
   saveAndRender();
@@ -1815,10 +1807,22 @@ function editEvent(id, type) {
   document.getElementById('pop-end').value = ev.endDate;
   document.getElementById('pop-color').value = ev.color || '#A07850';
   selectPopType(type);
-  const typeRow = document.getElementById('pop-type-row');
-  if(typeRow) typeRow.style.display = 'none';
+  const typeRow = document.getElementById('pop-type-row'); if(typeRow) typeRow.style.display = 'none';
+  const rf = document.getElementById('pop-repeat-field'); if(rf) rf.style.display = 'none';
   const sb = document.getElementById('pop-save-btn'); if(sb) sb.innerText = '수정 완료';
+  const db = document.getElementById('pop-delete-btn'); if(db) db.style.display = 'block';
   document.getElementById('cal-popup-bg').classList.add('open');
+}
+
+function deletePopEvent() {
+  const editId = document.getElementById('pop-edit-id')?.value;
+  const editType = document.getElementById('pop-edit-type')?.value;
+  if(!editId) return;
+  if(!confirm('이 일정을 삭제할까요?')) return;
+  if(editType==='mine') appData.mineEvents = appData.mineEvents.filter(x=>String(x.id)!==String(editId));
+  else appData.bfEvents = appData.bfEvents.filter(x=>String(x.id)!==String(editId));
+  closePopup();
+  saveAndRender();
 }
 function moveMonth(d) { calMonth += d; if(calMonth>11){calMonth=0;calYear++;} if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); }
 
@@ -1889,7 +1893,7 @@ function renderCalendar() {
       const showTitle = isStart || isWeekStart;
       evHtml+=`<div class="cal-ev ${cls}" style="background:${ev.color||'#A07850'}">${showTitle?ev.title:''}</div>`;
     }
-    html+=`<div class="cal-cell${isToday?' today':''}">${evHtml}</div>`;
+    html+=`<div class="cal-cell${isToday?' today':''}" onclick="openCalPopup('${dateStr}')" style="cursor:pointer;">${evHtml}</div>`;
   });
   document.getElementById('cal-cells').innerHTML = html;
 
@@ -2349,6 +2353,16 @@ function renderExp() {
 
 
 
+
+// ── 고정지출 접기/펼치기 ──
+let fixedOpen = true;
+function toggleFixed() {
+  fixedOpen = !fixedOpen;
+  const body = document.getElementById('fixed-body');
+  const icon = document.getElementById('fixed-toggle-icon');
+  if(body) body.style.display = fixedOpen ? 'block' : 'none';
+  if(icon) icon.innerText = fixedOpen ? '▲' : '▼';
+}
 // ── 고정지출 메모 ──
 function addFixed() {
   const name = document.getElementById('fixed-name').value.trim();
@@ -2380,6 +2394,8 @@ function renderFixed() {
     '<p style="color:var(--ink-soft);font-size:12px;padding:4px 0;">고정 지출 항목을 추가해보세요</p>';
   const totalEl = document.getElementById('fixed-total');
   if(totalEl) totalEl.innerText = total.toLocaleString('ko-KR') + '원';
+  const miniEl = document.getElementById('fixed-total-mini');
+  if(miniEl) miniEl.innerText = total > 0 && !fixedOpen ? total.toLocaleString('ko-KR') + '원' : '';
 }
 
 // ── 가계부 ──
