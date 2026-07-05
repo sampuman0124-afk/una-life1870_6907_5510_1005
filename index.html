@@ -25,7 +25,7 @@
   // Firebase에 저장
   window.firebaseSave = async function(data) {
     try {
-      await setDoc(DOC_REF, { data: JSON.stringify(data) });
+      await setDoc(DOC_REF, { data: JSON.stringify(data), updatedAt: new Date().toISOString() }, { merge: true });
     } catch(e) {
       console.warn('Firebase 저장 실패, localStorage 사용:', e);
       localStorage.setItem('unaLifeData', JSON.stringify(data));
@@ -89,7 +89,6 @@ body {
   display:flex; flex-direction:column;
   padding:22px 14px 18px; gap:2px;
   height:100vh; overflow-y:auto;
-  position:relative; z-index:10;
 }
 .sidebar-brand {
   font-family:'Nanum Myeongjo',serif;
@@ -716,7 +715,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
 @media(max-width:700px){
   html{ height:-webkit-fill-available; }
   .shell{ height:100vh; height:100dvh; }
-  .sidebar{width:56px;padding:16px 8px;position:relative;z-index:10;}
+  .sidebar{width:56px;padding:16px 8px}
   .sidebar-brand,.nav-item span:not(.icon),.nav-section,.sidebar-bottom{display:none}
   .nav-item .icon{ font-size:19px; width:auto; }
   .nav-item{justify-content:center;padding:10px}
@@ -840,8 +839,8 @@ tr:hover td { background:rgba(160,120,80,.04); }
           </div>
         </div>
         <div class="hero-date">
-          <span id="hero-date-str"></span>
-          <span class="hero-dow" id="hero-dow"></span>
+          <span id="hero-date-str">2026년 6월 23일</span>
+          <span class="hero-dow" id="hero-dow">화요일</span>
         </div>
         <div class="hero-sub" id="hero-sub">오늘도 잘 해낼 수 있어 🌿</div>
 
@@ -1173,15 +1172,11 @@ tr:hover td { background:rgba(160,120,80,.04); }
         <span class="status-pill">방문 전 <span id="exp-count-before">0</span></span>
         <span class="status-pill">작성 중 <span id="exp-count-writing">0</span></span>
         <span class="status-pill">완료 <span id="exp-count-done">0</span></span>
-        <div style="display:flex;gap:6px;margin-left:auto;align-items:center;">
-          <button id="exp-view-active" class="btn btn-sm" onclick="setExpView('active')" style="background:var(--accent);font-size:11px;">진행 중</button>
-          <button id="exp-view-done" class="btn btn-sm btn-outline" onclick="setExpView('done')" style="font-size:11px;">완료</button>
-          <select id="exp-sort" onchange="renderExp()" style="font-family:inherit;font-size:12px;padding:6px 8px;border:1px solid var(--line2);border-radius:7px;">
-            <option value="deadline">마감일순</option>
-            <option value="start">방문기간순</option>
-            <option value="status">상태순</option>
-          </select>
-        </div>
+        <select id="exp-sort" onchange="renderExp()" style="margin-left:auto;font-family:inherit;font-size:12px;padding:6px 8px;border:1px solid var(--line2);border-radius:7px;">
+          <option value="deadline">마감일순</option>
+          <option value="start">방문기간순</option>
+          <option value="status">상태순</option>
+        </select>
       </div>
 
       <div class="exp-gantt-wrap">
@@ -1234,21 +1229,19 @@ tr:hover td { background:rgba(160,120,80,.04); }
 
     <!-- 고정지출 메모 -->
     <div class="card" style="margin-bottom:14px;">
-      <!-- 헤더 - 클릭하면 접었다 폈다 -->
-      <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="toggleFixed()">
+      <!-- 헤더 클릭으로 접기/펼치기 -->
+      <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;" onclick="toggleFixed()">
         <div style="display:flex;align-items:center;gap:8px;">
           <div class="card-title" style="font-size:14px;margin:0;">📌 고정 지출 예산</div>
           <span id="fixed-total-mini" style="font-size:12px;font-weight:700;color:var(--accent);"></span>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;">
+        <div style="display:flex;align-items:center;gap:6px;">
           <span style="font-size:11px;color:var(--ink-soft);">매달 나가는 고정 비용</span>
-          <span id="fixed-toggle-icon" style="font-size:14px;color:var(--ink-soft);transition:.2s;">▲</span>
+          <span id="fixed-toggle-icon" style="font-size:13px;color:var(--ink-soft);">▲</span>
         </div>
       </div>
-
       <!-- 접히는 내용 -->
       <div id="fixed-body" style="margin-top:10px;">
-        <!-- 고정지출 추가 -->
         <div class="form-row" style="margin-bottom:8px;">
           <input type="text" id="fixed-name" placeholder="항목명 (예: 관리비)" style="flex:1;min-width:100px;">
           <input type="number" id="fixed-budget" placeholder="예산금액" min="0" style="width:110px;">
@@ -1256,7 +1249,6 @@ tr:hover td { background:rgba(160,120,80,.04); }
           <input type="text" id="fixed-memo" placeholder="메모 (예: 매월 25일)" style="flex:1;min-width:100px;">
           <button class="btn btn-sm" onclick="addFixed()">추가</button>
         </div>
-        <!-- 고정지출 목록 -->
         <div id="fixed-list" style="min-height:30px;">
           <p style="color:var(--ink-soft);font-size:12px;padding:4px 0;">고정 지출 항목을 추가해보세요</p>
         </div>
@@ -1538,6 +1530,27 @@ let appData = {
   mineEvents:[], bfEvents:[], experiences:[], moneyRecords:[], fixedExpenses:[], incomePlans:[], savingGoals:{}, piggyBank:[], diaries:{}, diaryPin:null
 };
 
+// 초기 불러오기 완료 전에는 Firebase 저장을 차단한다.
+// 네트워크/권한 문제로 빈 기본 데이터가 기존 Firebase 데이터를 덮어쓰는 사고를 막기 위한 안전장치.
+let dataLoaded = false;
+
+function normalizeAppData() {
+  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank'];
+  arrayKeys.forEach(k => { if(!Array.isArray(appData[k])) appData[k] = []; });
+  if(!appData.savingGoals || typeof appData.savingGoals !== 'object' || Array.isArray(appData.savingGoals)) appData.savingGoals = {};
+  if(!appData.diaries || typeof appData.diaries !== 'object' || Array.isArray(appData.diaries)) appData.diaries = {};
+  if(appData.diaryPin === undefined) appData.diaryPin = null;
+}
+
+function isMeaningfulData(data) {
+  if(!data || typeof data !== 'object') return false;
+  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank'];
+  const hasArrayData = arrayKeys.some(k => Array.isArray(data[k]) && data[k].length > 0);
+  const hasDiaryData = data.diaries && typeof data.diaries === 'object' && !Array.isArray(data.diaries) && Object.keys(data.diaries).length > 0;
+  const hasSettings = !!data.diaryPin || !!data.currentSemester || (data.savingGoals && typeof data.savingGoals === 'object' && Object.keys(data.savingGoals).length > 0);
+  return hasArrayData || hasDiaryData || hasSettings;
+}
+
 // ── 탭 전환 ──
 function switchTab(name) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -1557,28 +1570,20 @@ function switchTab(name) {
 function initHero() {
   const now = new Date();
   const days = ['일','월','화','수','목','금','토'];
-  const months = now.getMonth() + 1;
-  const date = now.getDate();
-  const year = now.getFullYear();
+  document.getElementById('hero-date-str').innerText =
+    `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
+  document.getElementById('hero-dow').innerText = days[now.getDay()] + '요일';
 
-  // 날짜 표시
-  const dateEl = document.getElementById('hero-date-str');
-  if(dateEl) dateEl.innerText = `${year}년 ${months}월 ${date}일`;
-  const dowEl = document.getElementById('hero-dow');
-  if(dowEl) dowEl.innerText = days[now.getDay()] + '요일';
-
-  // 디데이 - 로컬 시간 기준
-  const start = new Date(2025, 7, 14); // 2025-08-14
-  const todayLocal = new Date(year, now.getMonth(), date);
-  const diff = Math.floor((todayLocal - start) / 86400000) + 1;
-  const loveEl = document.getElementById('love-days');
-  if(loveEl) loveEl.innerText = diff;
+  // 디데이
+  const start = new Date(2025, 7, 14);
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diff = Math.floor((today - start) / 86400000) + 1;
+  document.getElementById('love-days').innerText = diff;
 
   // 인사말
   const h = now.getHours();
   const greetings = h < 6 ? '밤도 열심히네요 🌙' : h < 12 ? '좋은 아침이에요 ☀️' : h < 18 ? '오늘도 화이팅 🌿' : '수고했어요 오늘도 💫';
-  const subEl = document.getElementById('hero-sub');
-  if(subEl) subEl.innerText = greetings;
+  document.getElementById('hero-sub').innerText = greetings;
 }
 
 // ── 할 일 ──
@@ -1731,14 +1736,21 @@ function addCalEvent() {
 }
 function openCalPopup(dateStr) {
   calPopType = 'mine';
-  document.getElementById('pop-type-mine').className = 'type-btn active-mine';
-  document.getElementById('pop-type-bf').className = 'type-btn';
-  document.getElementById('pop-color').value = '#A07850';
-  document.getElementById('cal-popup-date').innerText = `📅 ${dateStr} 일정 추가`;
+  selectPopType('mine');
+  document.getElementById('cal-popup-date').innerText = `📅 ${dateStr}`;
   document.getElementById('pop-title').value = '';
   document.getElementById('pop-start').value = dateStr;
   document.getElementById('pop-end').value = dateStr;
+  document.getElementById('pop-color').value = '#A07850';
+  const eid = document.getElementById('pop-edit-id'); if(eid) eid.value = '';
+  const etype = document.getElementById('pop-edit-type'); if(etype) etype.value = '';
+  const tr = document.getElementById('pop-type-row'); if(tr) tr.style.display = '';
+  const rf = document.getElementById('pop-repeat-field'); if(rf) rf.style.display = 'block';
+  const pr = document.getElementById('pop-repeat'); if(pr) pr.value = 'none';
+  const sb = document.getElementById('pop-save-btn'); if(sb) sb.innerText = '등록';
+  const db = document.getElementById('pop-delete-btn'); if(db) db.style.display = 'none';
   document.getElementById('cal-popup-bg').classList.add('open');
+  setTimeout(()=>{ const t=document.getElementById('pop-title'); if(t) t.focus(); }, 150);
 }
 function closePopup() {
   document.getElementById('cal-popup-bg').classList.remove('open');
@@ -1760,21 +1772,20 @@ function savePopEvent() {
   const editId = editIdEl ? editIdEl.value : '';
   const editType = editTypeEl ? editTypeEl.value : '';
 
+  const repeat = document.getElementById('pop-repeat')?.value || 'none';
   if(editId) {
-    // 수정 모드
     const list = editType==='mine' ? appData.mineEvents : appData.bfEvents;
     const idx = list.findIndex(x=>String(x.id)===String(editId));
-    if(idx!==-1) {
-      list[idx].title=title;
-      list[idx].startDate=start;
-      list[idx].endDate=end;
-      list[idx].color=color;
-    }
+    if(idx!==-1) { list[idx].title=title; list[idx].startDate=start; list[idx].endDate=end; list[idx].color=color; }
   } else {
-    // 추가 모드
-    const ev = { id:Date.now(), title, startDate:start, endDate:end, color };
-    if(calPopType==='mine') appData.mineEvents.push(ev);
-    else appData.bfEvents.push(ev);
+    const ev = { id:Date.now(), title, startDate:start, endDate:end, color, repeat };
+    const list = calPopType==='mine' ? appData.mineEvents : appData.bfEvents;
+    list.push(ev);
+    if(repeat !== 'none') {
+      const repeats = generateRepeatEvents(ev, repeat);
+      repeats.forEach(r=>list.push(r));
+      showToast(`반복 일정 ${repeats.length}개 추가됐어요! 🔁`,'🔁');
+    }
   }
   closePopup();
   saveAndRender();
@@ -1796,10 +1807,10 @@ function editEvent(id, type) {
   document.getElementById('pop-end').value = ev.endDate;
   document.getElementById('pop-color').value = ev.color || '#A07850';
   selectPopType(type);
-  const typeRow = document.getElementById('pop-type-row'); if(typeRow) typeRow.style.display='none';
-  const rf = document.getElementById('pop-repeat-field'); if(rf) rf.style.display='none';
-  const sb = document.getElementById('pop-save-btn'); if(sb) sb.innerText='수정 완료';
-  const db = document.getElementById('pop-delete-btn'); if(db) db.style.display='block';
+  const typeRow = document.getElementById('pop-type-row'); if(typeRow) typeRow.style.display = 'none';
+  const rf = document.getElementById('pop-repeat-field'); if(rf) rf.style.display = 'none';
+  const sb = document.getElementById('pop-save-btn'); if(sb) sb.innerText = '수정 완료';
+  const db = document.getElementById('pop-delete-btn'); if(db) db.style.display = 'block';
   document.getElementById('cal-popup-bg').classList.add('open');
 }
 
@@ -1827,8 +1838,7 @@ function renderCalendar() {
   const firstDay = new Date(calYear, calMonth, 1).getDay();
   const lastDate = new Date(calYear, calMonth+1, 0).getDate();
   const now = new Date();
-  const nowLocal = new Date();
-  const todayStr = `${nowLocal.getFullYear()}-${String(nowLocal.getMonth()+1).padStart(2,'0')}-${String(nowLocal.getDate()).padStart(2,'0')}`;
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
 
   // 전체 날짜 문자열 배열
   const dateCells = [];
@@ -2043,11 +2053,7 @@ function renderGrades() {
   if(avgGradeEl) avgGradeEl.innerText = '-';
 }
 
-function saveAndRender() {
-  // Firebase + localStorage 동시 저장
-  localStorage.setItem('unaLifeData', JSON.stringify(appData));
-  if(window.firebaseSave) window.firebaseSave(appData);
-
+function renderAll() {
   // 투두
   document.getElementById('todo-list').innerHTML = appData.todos.length ?
     appData.todos.map(t=>`<div class="todo-item">
@@ -2105,13 +2111,11 @@ function saveAndRender() {
   document.getElementById('upcoming-list').innerHTML = upcoming.length ?
     upcoming.map(t=>{
       const dd = calcDday(t.date);
-      const dNum = parseInt(dd.text.replace('D-','').replace('D-Day!','0'));
-      const isUrgent = dd.cls==='urgent' || dd.cls==='zero';
       const pColor = t.priority==='high'?'var(--rose)':t.priority==='mid'?'var(--accent)':'var(--sage)';
-      return `<div class="ev-item" style="cursor:pointer;${isUrgent?'background:rgba(192,118,106,.06);border-radius:10px;padding:6px 8px;margin-bottom:4px;':''}" onclick="switchTab('tasks')">
+      return `<div class="ev-item" style="cursor:pointer;" onclick="switchTab('tasks')">
         <span class="dday-chip ${dd.cls}" style="font-size:11px;padding:3px 7px;min-width:44px;">${dd.text}</span>
         <div class="ev-info">
-          <div class="ev-title" style="${isUrgent?'color:var(--rose);font-weight:700;':''}">${isUrgent?'🚨 ':''} ${t.name}</div>
+          <div class="ev-title">${t.name}</div>
           <div class="ev-date" style="display:flex;gap:6px;align-items:center;">
             <span style="background:${t.color||'#C0766A'};color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;">${t.type}</span>
             <span>${t.date}</span>
@@ -2135,26 +2139,35 @@ function saveAndRender() {
 }
 
 
+function saveAndRender() {
+  normalizeAppData();
+
+  // 초기 데이터 로딩이 완료되기 전에는 저장하지 않고 화면만 갱신한다.
+  if(!dataLoaded) {
+    console.warn('초기 데이터 로딩 전 저장 시도가 차단되었습니다.');
+    renderAll();
+    return;
+  }
+
+  const nextData = JSON.stringify(appData);
+  const previousData = localStorage.getItem('unaLifeData');
+
+  // 최근 로컬 백업 1개를 유지한다. 복구가 필요할 때 Application > Local Storage에서 확인 가능.
+  if(previousData && previousData !== nextData) {
+    localStorage.setItem('unaLifeData_autoBackup', previousData);
+  }
+
+  localStorage.setItem('unaLifeData', nextData);
+  if(window.firebaseSave) window.firebaseSave(appData);
+  renderAll();
+}
 
 function expStatusClass(s) {
   return {'방문 전':'s0','예약 완료':'s1','방문 완료':'s2','작성 중':'s3','검수/수정':'s4','완료':'s5'}[s]||'s0';
 }
 // ── 체험단 ──
 let currentExpDate = new Date();
-let expOffset = 0;
-let expView = 'active';
- // 오늘 기준 일 오프셋
-
-
-let expView = 'active';
-function setExpView(v) {
-  expView = v;
-  const ab = document.getElementById('exp-view-active');
-  const db = document.getElementById('exp-view-done');
-  if(ab) { ab.style.background = v==='active'?'var(--accent)':'#fff'; ab.style.color = v==='active'?'#fff':'var(--accent)'; ab.className = v==='active'?'btn btn-sm':'btn btn-sm btn-outline'; }
-  if(db) { db.style.background = v==='done'?'var(--accent)':'#fff'; db.style.color = v==='done'?'#fff':'var(--accent)'; db.className = v==='done'?'btn btn-sm':'btn btn-sm btn-outline'; }
-  renderExp();
-}
+let expOffset = 0; // 오늘 기준 일 오프셋
 
 function moveExpMonth(d) { expOffset += d*30; renderExp(); }
 function setExpToday() { expOffset = 0; renderExp(); }
@@ -2273,9 +2286,6 @@ function renderExp() {
   target.innerHTML=header;
 
   let list=[...appData.experiences];
-  // 완료/진행중 필터
-  if(expView==='active') list = list.filter(e=>e.status!=='완료');
-  else list = list.filter(e=>e.status==='완료');
   const sortVal=document.getElementById('exp-sort')?.value||'deadline';
   if(sortVal==='deadline') list.sort((a,b)=>(a.deadlineDate||a.endDate).localeCompare(b.deadlineDate||b.endDate));
   else if(sortVal==='start') list.sort((a,b)=>a.startDate.localeCompare(b.startDate));
@@ -2384,9 +2394,8 @@ function renderFixed() {
     '<p style="color:var(--ink-soft);font-size:12px;padding:4px 0;">고정 지출 항목을 추가해보세요</p>';
   const totalEl = document.getElementById('fixed-total');
   if(totalEl) totalEl.innerText = total.toLocaleString('ko-KR') + '원';
-  // 접힌 상태에서 헤더에 합계 표시
   const miniEl = document.getElementById('fixed-total-mini');
-  if(miniEl) miniEl.innerText = total > 0 ? total.toLocaleString('ko-KR') + '원' : '';
+  if(miniEl) miniEl.innerText = total > 0 && !fixedOpen ? total.toLocaleString('ko-KR') + '원' : '';
 }
 
 // ── 가계부 ──
@@ -3234,53 +3243,82 @@ function importData(e) {
 
 // ── 초기화 ──
 async function loadData() {
-  // 로딩 표시
   showToast('데이터 불러오는 중...', '☁️', 2000);
+  let loaded = false;
+
   try {
     let saved = null;
+
     if(window.firebaseLoad) {
       saved = await window.firebaseLoad();
-    } else {
-      const local = localStorage.getItem('unaLifeData');
-      saved = local ? JSON.parse(local) : null;
     }
-    if(saved) {
+
+    // Firebase에서 의미 있는 데이터가 확인될 때만 appData를 교체한다.
+    if(isMeaningfulData(saved)) {
       appData = saved;
-      ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank','diaries']
-        .forEach(k => { if(!appData[k]) appData[k] = []; });
-      if(!appData.savingGoals) appData.savingGoals = {};
-      showToast('데이터 불러왔어요 ☁️', '✅', 2000);
+      normalizeAppData();
+      loaded = true;
+      showToast('Firebase 데이터를 불러왔어요 ☁️', '✅', 2000);
+    } else {
+      // Firebase가 비었거나 실패했을 때만 로컬 저장소를 확인한다.
+      const local = localStorage.getItem('unaLifeData');
+      if(local) {
+        const parsedLocal = JSON.parse(local);
+        if(isMeaningfulData(parsedLocal)) {
+          appData = parsedLocal;
+          normalizeAppData();
+          loaded = true;
+          showToast('로컬 데이터를 불러왔어요. 필요하면 백업 파일을 내려받으세요.', '✅', 3000);
+        }
+      }
     }
   } catch(e) {
     console.warn('로드 실패:', e);
-    const local = localStorage.getItem('unaLifeData');
-    if(local) {
-      try { appData = JSON.parse(local); } catch {}
+    try {
+      const local = localStorage.getItem('unaLifeData');
+      if(local) {
+        const parsedLocal = JSON.parse(local);
+        if(isMeaningfulData(parsedLocal)) {
+          appData = parsedLocal;
+          normalizeAppData();
+          loaded = true;
+          showToast('Firebase 오류로 로컬 데이터를 불러왔어요.', '⚠️', 3000);
+        }
+      }
+    } catch(localError) {
+      console.warn('로컬 데이터 로드 실패:', localError);
     }
   }
-  saveAndRender();
+
+  normalizeAppData();
+  dataLoaded = true;
+
+  // 중요: 초기 로드 직후에는 Firebase에 저장하지 않고 화면만 그린다.
+  // 빈 데이터가 기존 Firebase 데이터를 덮어쓰는 것을 방지한다.
+  renderAll();
+
+  if(!loaded) {
+    showToast('저장된 데이터를 찾지 못했습니다. 자동 덮어쓰기는 차단됐어요.', '⚠️', 4000);
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 히어로 즉시 초기화
   initHero();
   renderCalendar();
   renderTimetable();
 
-  // 매 분마다 히어로 날짜 갱신
-  setInterval(initHero, 60000);
-
-  // Firebase or localStorage 로드
+  // Firebase 준비되면 로드, 아니면 바로 로드
   if(window.firebaseLoad) {
     loadData();
   } else {
     window.addEventListener('firebaseReady', () => loadData(), { once: true });
-    setTimeout(() => { if(!appData || !appData.todos) loadData(); }, 3000);
+    // 3초 안에 Firebase 안 되면 localStorage로 fallback
+    setTimeout(() => {
+      if(!appData.todos) loadData();
+    }, 3000);
   }
-
   setTimeout(checkDeadlineAlerts, 2000);
   updateSemesterDisplay();
-
   // 가계부 날짜 기본값
   const todayStr2 = new Date().toISOString().split('T')[0];
   const moneyDateEl = document.getElementById('money-date');
