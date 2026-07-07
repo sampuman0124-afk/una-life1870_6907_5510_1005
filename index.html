@@ -315,29 +315,29 @@ tr:hover td { background:rgba(160,120,80,.04); }
   border-bottom:1px solid var(--line);
 }
 .cal-cell {
-  min-height:112px; padding:0; border-right:1px solid var(--line);
+  min-height:120px; padding:0; border-right:1px solid var(--line);
   border-bottom:1px solid var(--line); background:#fff;
   cursor:pointer; transition:.1s; position:relative;
 }
 .cal-cell.other-month { background:rgba(0,0,0,.015); }
 .cal-cell.other-month:hover { background:rgba(0,0,0,.03); }
-.cal-num { padding:7px 7px 4px; font-size:12px; font-weight:600; color:var(--ink-soft); }
+.cal-num { padding:7px 7px 4px; font-size:13.5px; font-weight:600; color:var(--ink-soft); }
 .cal-cell:nth-child(7n) { border-right:none; }
 .cal-cell:hover { background:rgba(160,120,80,.05); }
 .cal-cell.today { background:rgba(160,120,80,.09); }
-.cal-num { font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:3px; }
+.cal-num { font-size:13.5px; font-weight:600; color:var(--ink-soft); margin-bottom:3px; }
 .cal-ev {
-  font-size:10.5px; font-weight:600; padding:3px 7px;
-  color:#fff; margin-bottom:3px;
+  font-size:12px; font-weight:700; padding:3px 7px;
+  margin-bottom:3px;
   display:flex; flex-direction:column; justify-content:center;
-  min-height:26px; cursor:pointer; transition:filter .1s;
+  min-height:28px; cursor:pointer; transition:filter .1s;
 }
-.cal-ev-title { line-height:14px; white-space:normal; word-break:break-word; }
-.cal-ev-time { font-size:8.5px; font-weight:500; opacity:.85; line-height:11px; margin-top:1px; white-space:normal; word-break:break-word; }
-.cal-ev:hover { filter:brightness(0.92); }
+.cal-ev-title { line-height:15px; white-space:normal; word-break:break-word; }
+.cal-ev-time { font-size:9.5px; font-weight:600; opacity:.8; line-height:12px; margin-top:1px; white-space:normal; word-break:break-word; }
+.cal-ev:hover { filter:brightness(0.96); }
 .cal-ev.ev-single { border-radius:6px; margin:0 2px 2px; }
 .cal-ev.ev-start  { border-radius:6px 0 0 6px; margin-left:2px; margin-right:0; margin-bottom:2px; }
-.cal-ev.ev-mid    { border-radius:0; margin-left:0; margin-right:0; margin-bottom:2px; opacity:.95; }
+.cal-ev.ev-mid    { border-radius:0; margin-left:0; margin-right:0; margin-bottom:2px; }
 .cal-ev.ev-end    { border-radius:0 6px 6px 0; margin-left:0; margin-right:2px; margin-bottom:2px; }
 /* 오늘 강조 */
 .exp-today-line {
@@ -458,10 +458,22 @@ tr:hover td { background:rgba(160,120,80,.04); }
 .exp-gantt { min-width:980px; }
 .exp-gantt-header, .exp-gantt-row { display:grid; align-items:stretch; }
 .exp-gantt-header > div { background:rgba(160,120,80,.07); border-right:1px solid var(--line); border-bottom:1px solid var(--line2); padding:6px 3px; text-align:center; font-size:11px; font-weight:700; color:var(--ink-soft); }
-.exp-gantt-row { min-height:44px; position:relative; border-bottom:1px solid var(--line); }
-.exp-gantt-name { padding:8px; border-right:1px solid var(--line); font-weight:700; font-size:12px; display:flex; gap:5px; align-items:center; background:#fff; position:sticky; left:0; z-index:2; min-width:180px; }
+.exp-gantt-row { min-height:44px; position:relative; border-bottom:1px solid var(--line); align-items:center; }
+.exp-gantt-name { padding:8px; border-right:1px solid var(--line); font-weight:700; font-size:12px; display:flex; gap:5px; align-items:center; background:#fff; position:sticky; left:0; z-index:2; min-width:220px; box-shadow:2px 0 4px rgba(0,0,0,.05); }
 .exp-dot { width:9px; height:9px; border-radius:50%; display:inline-block; flex-shrink:0; }
-.exp-name-text { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.exp-name-text { white-space:normal; word-break:keep-all; line-height:1.3; }
+
+/* 체험단 목록 테이블: 업체명 열 고정 (엑셀 틀 고정처럼) */
+.exp-table-wrap { overflow-x:auto; }
+.exp-table-wrap table { min-width:900px; }
+.exp-table-wrap th:first-child, .exp-table-wrap td:first-child {
+  position:sticky; left:0; z-index:2;
+  box-shadow:2px 0 4px rgba(0,0,0,.05);
+  white-space:normal; word-break:keep-all;
+  min-width:150px;
+}
+.exp-table-wrap th:first-child { background:#F3EAE0; z-index:3; }
+.exp-table-wrap td:first-child { background:var(--paper2); }
 .exp-day-cell { border-right:1px solid rgba(0,0,0,.04); background:#fff; }
 .exp-day-cell.today { background:rgba(160,120,80,.06); }
 .exp-bar { position:absolute; top:10px; height:24px; border-radius:6px; color:#fff; font-size:11px; font-weight:700; padding:4px 8px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; box-shadow:0 2px 6px rgba(0,0,0,.12); cursor:pointer; z-index:3; }
@@ -469,6 +481,8 @@ tr:hover td { background:rgba(160,120,80,.04); }
 .exp-deadline-marker { position:absolute; top:6px; width:7px; height:32px; border-radius:4px; background:var(--rose); z-index:4; }
 .exp-help { background:rgba(160,120,80,.06); border-radius:10px; padding:10px 14px; color:var(--ink-soft); font-size:12px; margin-top:12px; line-height:1.6; }
 .status-pill { display:inline-flex; align-items:center; gap:5px; background:rgba(160,120,80,.1); color:var(--accent); font-size:12px; font-weight:700; padding:4px 10px; border-radius:999px; }
+.month-count-chip { background:#fff; border:1px solid var(--line); border-radius:20px; padding:3px 10px; font-weight:600; color:var(--ink-soft); }
+.month-count-chip.cur { background:rgba(160,120,80,.14); color:var(--accent); border-color:var(--accent); }
 .platform-badge { display:inline-block; font-size:10px; font-weight:800; padding:2px 6px; border-radius:999px; color:#fff; }
 .platform-badge.blog { background:#48bb78; }
 .platform-badge.review { background:#4299e1; }
@@ -491,11 +505,11 @@ tr:hover td { background:rgba(160,120,80,.04); }
 }
 
 /* 컴팩트 달력 (이번달/다음달 공용, 크기 축소) */
-.cal-compact .cal-day-label { padding:5px 2px; font-size:10px; }
-.cal-compact .cal-cell { min-height:60px; }
-.cal-compact .cal-num { font-size:10.5px; padding:4px 5px 1px; margin-bottom:1px; }
-.cal-compact .cal-ev { min-height:17px; font-size:9px; padding:1px 5px; margin-bottom:1px; }
-.cal-compact .cal-ev-time { font-size:7px; }
+.cal-compact .cal-day-label { padding:5px 2px; font-size:10.5px; }
+.cal-compact .cal-cell { min-height:68px; }
+.cal-compact .cal-num { font-size:11.5px; padding:4px 5px 1px; margin-bottom:1px; }
+.cal-compact .cal-ev { min-height:19px; font-size:10px; padding:1px 5px; margin-bottom:1px; }
+.cal-compact .cal-ev-time { font-size:8px; }
 
 /* ── 시간표 매트릭스 ── */
 .timetable-cell-box { border-radius:6px; color:#fff; font-size:11.5px; font-weight:700; padding:4px 6px; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; }
@@ -1221,6 +1235,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
         <input type="date" id="exp-end-date">
         <span class="form-label">방문일</span>
         <input type="date" id="exp-visit-date">
+        <input type="time" id="exp-visit-time" style="width:100px;">
         <span class="form-label">마감</span>
         <input type="date" id="exp-deadline-date">
       </div>
@@ -1238,19 +1253,21 @@ tr:hover td { background:rgba(160,120,80,.04); }
         <span class="status-pill">방문 전 <span id="exp-count-before">0</span></span>
         <span class="status-pill">작성 중 <span id="exp-count-writing">0</span></span>
         <span class="status-pill">완료 <span id="exp-count-done">0</span></span>
+        <button class="btn btn-sm btn-outline" id="exp-done-toggle" onclick="toggleExpShowDone()" style="display:none;"></button>
         <select id="exp-sort" onchange="renderExp()" style="margin-left:auto;font-family:inherit;font-size:12px;padding:6px 8px;border:1px solid var(--line2);border-radius:7px;">
           <option value="deadline">마감일순</option>
           <option value="start">방문기간순</option>
           <option value="status">상태순</option>
         </select>
       </div>
+      <div id="exp-month-stats" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:12px;font-size:11.5px;color:var(--ink-soft);"></div>
 
       <div class="exp-gantt-wrap">
         <div class="exp-gantt" id="exp-gantt-target"></div>
       </div>
       <div class="exp-help">💡 막대를 클릭하면 수정할 수 있어요. 초록 세로선은 방문일, 빨간 세로선은 포스팅 마감일이에요.</div>
 
-      <div class="table-scroll"><table style="margin-top:14px;">
+      <div class="table-scroll exp-table-wrap"><table style="margin-top:14px;">
         <thead><tr><th>업체명</th><th>플랫폼</th><th>방문 가능 기간</th><th>방문일</th><th>마감일</th><th>D-Day</th><th>상태</th><th>제공내역</th><th>지역</th><th>메모</th><th>관리</th></tr></thead>
         <tbody id="exp-table-body"></tbody>
       </table></div>
@@ -1950,6 +1967,13 @@ function fmtTimeRange(ev) {
   if(!ev || !ev.timeStart) return '';
   return ev.timeEnd ? `${ev.timeStart}-${ev.timeEnd}` : ev.timeStart;
 }
+function hexToRgb(hex) {
+  hex = (hex||'#A07850').replace('#','');
+  if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
+  const num = parseInt(hex,16);
+  if(isNaN(num)) return { r:160, g:120, b:80 };
+  return { r:(num>>16)&255, g:(num>>8)&255, b:num&255 };
+}
 // 대한민국 공휴일 (2026년 기준. 매년 음력 공휴일이 바뀌므로 새해가 되면 업데이트가 필요해요)
 const KOREAN_HOLIDAYS = {
   '2026-01-01':'신정',
@@ -1992,6 +2016,10 @@ function buildCalendarGrid(year, month) {
     ...(appData.mineEvents||[]).map(e=>({...e, _etype:'mine'})),
     ...(appData.bfEvents||[]).map(e=>({...e, _etype:'bf'})),
     ...(appData.togetherEvents||[]).map(e=>({...e, _etype:'together'})),
+    ...(appData.experiences||[]).filter(e=>e.visitDate && e.status!=='완료').map(e=>({
+      id:e.id, title:'🎯 '+e.name, startDate:e.visitDate, endDate:e.visitDate,
+      color:e.color||'#7A9E8E', timeStart:e.visitTime||'', timeEnd:'', _etype:'experience'
+    })),
   ].sort((a,b)=>a.startDate.localeCompare(b.startDate));
 
   const slots = {};
@@ -2032,7 +2060,11 @@ function buildCalendarGrid(year, month) {
       const cls = isSingle?'ev-single':isStart||isWeekStart?'ev-start':isEnd?'ev-end':'ev-mid';
       const showTitle = isStart || isWeekStart;
       const timeLabel = fmtTimeRange(ev);
-      evHtml+=`<div class="cal-ev ${cls}" style="background:${ev.color||'#A07850'}" onclick="event.stopPropagation();editEvent(${ev.id},'${ev._etype}')"><span class="cal-ev-title">${showTitle?ev.title:''}</span>${showTitle&&timeLabel?`<span class="cal-ev-time">${timeLabel}</span>`:''}</div>`;
+      const {r,g,b} = hexToRgb(ev.color||'#A07850');
+      const bg = `rgba(${r},${g},${b},0.16)`;
+      const txtColor = ev.color||'#A07850';
+      const clickFn = ev._etype==='experience' ? `editExperience(${ev.id})` : `editEvent(${ev.id},'${ev._etype}')`;
+      evHtml+=`<div class="cal-ev ${cls}" style="background:${bg};color:${txtColor};" onclick="event.stopPropagation();${clickFn}"><span class="cal-ev-title">${showTitle?ev.title:''}</span>${showTitle&&timeLabel?`<span class="cal-ev-time">${timeLabel}</span>`:''}</div>`;
     }
     html+=`<div class="cal-cell${isToday?' today':''}" onclick="openCalPopup('${dateStr}')" style="cursor:pointer;">${evHtml}</div>`;
   });
@@ -2328,6 +2360,11 @@ function expStatusClass(s) {
 // ── 체험단 ──
 let currentExpDate = new Date();
 let expOffset = 0; // 오늘 기준 일 오프셋
+let expShowDone = false; // 완료된 체험단 접기(기본 숨김) 여부
+function toggleExpShowDone() {
+  expShowDone = !expShowDone;
+  renderExp();
+}
 
 function moveExpMonth(d) { expOffset += d*30; renderExp(); }
 function setExpToday() { expOffset = 0; renderExp(); }
@@ -2360,6 +2397,7 @@ function saveExperience() {
     platform: document.getElementById('exp-platform').value,
     status: document.getElementById('exp-status').value,
     visitDate: document.getElementById('exp-visit-date').value,
+    visitTime: document.getElementById('exp-visit-time').value,
     deadlineDate: document.getElementById('exp-deadline-date').value,
     reward: document.getElementById('exp-reward').value.trim(),
     region: document.getElementById('exp-region').value.trim(),
@@ -2374,6 +2412,7 @@ function saveExperience() {
     appData.experiences.push(obj);
   }
   ['exp-name','exp-reward','exp-region','exp-memo'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('exp-visit-time').value = '';
   saveAndRender();
 }
 
@@ -2387,6 +2426,7 @@ function editExperience(id) {
   document.getElementById('exp-start-date').value = e.startDate;
   document.getElementById('exp-end-date').value = e.endDate;
   document.getElementById('exp-visit-date').value = e.visitDate||'';
+  document.getElementById('exp-visit-time').value = e.visitTime||'';
   document.getElementById('exp-deadline-date').value = e.deadlineDate||'';
   document.getElementById('exp-reward').value = e.reward||'';
   document.getElementById('exp-region').value = e.region||'';
@@ -2400,6 +2440,7 @@ function editExperience(id) {
 function cancelExpEdit() {
   document.getElementById('exp-edit-id').value = '';
   ['exp-name','exp-reward','exp-region','exp-memo'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('exp-visit-time').value = '';
   document.getElementById('exp-submit-btn').innerText = '등록';
   document.getElementById('exp-cancel-btn').style.display = 'none';
 }
@@ -2423,7 +2464,7 @@ function renderExp() {
   const cur = new Date(viewStart);
   while(cur<=viewEnd){ dates.push(new Date(cur)); cur.setDate(cur.getDate()+1); }
 
-  const colW=30, nameW=180;
+  const colW=30, nameW=220;
   const dayNames=['일','월','화','수','목','금','토'];
   const todayOnly = new Date(); todayOnly.setHours(0,0,0,0);
 
@@ -2446,6 +2487,8 @@ function renderExp() {
   target.innerHTML=header;
 
   let list=[...appData.experiences];
+  const doneCount = list.filter(e=>e.status==='완료').length;
+  if(!expShowDone) list = list.filter(e=>e.status!=='완료');
   const sortVal=document.getElementById('exp-sort')?.value||'deadline';
   list.sort((a,b)=>{
     const aDone = a.status==='완료', bDone = b.status==='완료';
@@ -2454,6 +2497,12 @@ function renderExp() {
     if(sortVal==='start') return a.startDate.localeCompare(b.startDate);
     return (a.status||'').localeCompare(b.status||'');
   });
+
+  const doneToggleEl = document.getElementById('exp-done-toggle');
+  if(doneToggleEl) {
+    doneToggleEl.innerText = expShowDone ? `완료 ${doneCount}개 접기` : `완료 ${doneCount}개 펼쳐보기`;
+    doneToggleEl.style.display = doneCount>0 ? 'inline-flex' : 'none';
+  }
 
   const visible=list.filter(e=>!(getDateOnly(e.endDate)<viewStart||getDateOnly(e.startDate)>viewEnd));
   if(!visible.length) { target.innerHTML+=`<div style="padding:18px;color:var(--ink-soft);font-size:13px;">이 기간에 등록된 체험단이 없어요</div>`; }
@@ -2491,7 +2540,7 @@ function renderExp() {
       <td><span class="color-preview" style="background:${e.color}"></span>${platformBadge(e.platform)} <strong>${e.name}</strong></td>
       <td>${e.platform||'-'}</td>
       <td>${formatShortDate(e.startDate)} ~ ${formatShortDate(e.endDate)}</td>
-      <td style="color:#4a9e7a;font-weight:700">${formatShortDate(e.visitDate)}</td>
+      <td style="color:#4a9e7a;font-weight:700">${formatShortDate(e.visitDate)}${e.visitTime?`<div style="font-size:11px;color:var(--ink-soft);font-weight:500;">${e.visitTime}</div>`:''}</td>
       <td style="color:var(--rose);font-weight:700">${formatShortDate(e.deadlineDate||e.endDate)}</td>
       <td>${ddChip}</td>
       <td><span class="exp-status ${expStatusClass(e.status)}">${e.status||'방문 전'}</span></td>
@@ -2505,10 +2554,29 @@ function renderExp() {
   document.getElementById('exp-count-writing').innerText=appData.experiences.filter(e=>['방문 완료','작성 중','검수/수정'].includes(e.status)).length;
   document.getElementById('exp-count-done').innerText=appData.experiences.filter(e=>e.status==='완료').length;
 
+  // 월별 체험단 개수 (방문일 기준, 없으면 방문가능 시작일 기준)
+  const monthCounts = {};
+  appData.experiences.forEach(e=>{
+    const dateForMonth = e.visitDate || e.startDate;
+    if(!dateForMonth) return;
+    const ym = dateForMonth.slice(0,7);
+    monthCounts[ym] = (monthCounts[ym]||0)+1;
+  });
+  const sortedYm = Object.keys(monthCounts).sort();
+  const nowYmKey = `${todayBase.getFullYear()}-${String(todayBase.getMonth()+1).padStart(2,'0')}`;
+  const statsEl = document.getElementById('exp-month-stats');
+  if(statsEl){
+    statsEl.innerHTML = sortedYm.map(ym=>{
+      const m = parseInt(ym.split('-')[1]);
+      const isCur = ym===nowYmKey;
+      return `<span class="month-count-chip${isCur?' cur':''}">${m}월 ${monthCounts[ym]}개</span>`;
+    }).join('');
+  }
+
   // 오늘이 화면 정중앙에 오도록 자동 스크롤
   const wrap = document.querySelector('.exp-gantt-wrap');
   if(wrap) {
-    const nameW = 180, colW = 30;
+    const nameW = 220, colW = 30;
     // todayBase 기준 offset=0일때 오늘은 30번째 컬럼
     const todayIdx = Math.round((todayBase - viewStart) / 86400000);
     const todayPx = nameW + todayIdx * colW;
@@ -2765,7 +2833,7 @@ function renderWeekStrip() {
         title:e.title, color:e.color||'#8E7CC3', meta:'💑 같이 일정'
       })),
       ...(appData.experiences||[]).filter(e=>e.visitDate===ds&&e.status!=='완료').map(e=>({
-        title:e.name, color:e.color||'#7A9E8E', meta:'🎯 체험단 방문'
+        title:e.name, color:e.color||'#7A9E8E', meta:`🎯 체험단 방문${e.visitTime?' · '+e.visitTime:''}`
       })),
       ...(appData.experiences||[]).filter(e=>e.deadlineDate===ds&&e.status!=='완료').map(e=>({
         title:e.name, color:'#C0527A', meta:'⛔ 체험단 마감'
