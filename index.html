@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>유나의 하루</title>
+<title>Cozy</title>
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -459,7 +459,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
 .exp-gantt-header, .exp-gantt-row { display:grid; align-items:stretch; }
 .exp-gantt-header > div { background:rgba(160,120,80,.07); border-right:1px solid var(--line); border-bottom:1px solid var(--line2); padding:6px 3px; text-align:center; font-size:11px; font-weight:700; color:var(--ink-soft); }
 .exp-gantt-row { min-height:44px; position:relative; border-bottom:1px solid var(--line); align-items:center; }
-.exp-gantt-name { padding:8px; border-right:1px solid var(--line); font-weight:700; font-size:12px; display:flex; gap:5px; align-items:center; background:#fff; position:sticky; left:0; z-index:2; min-width:220px; box-shadow:2px 0 4px rgba(0,0,0,.05); }
+.exp-gantt-name { padding:8px; border-right:1px solid var(--line); font-weight:700; font-size:12px; display:flex; gap:5px; align-items:center; background:#fff; position:sticky; left:0; z-index:5; min-width:220px; box-shadow:2px 0 4px rgba(0,0,0,.05); }
 .exp-dot { width:9px; height:9px; border-radius:50%; display:inline-block; flex-shrink:0; }
 .exp-name-text { white-space:normal; word-break:keep-all; line-height:1.3; }
 
@@ -476,9 +476,9 @@ tr:hover td { background:rgba(160,120,80,.04); }
 .exp-table-wrap td:first-child { background:var(--paper2); }
 .exp-day-cell { border-right:1px solid rgba(0,0,0,.04); background:#fff; }
 .exp-day-cell.today { background:rgba(160,120,80,.06); }
-.exp-bar { position:absolute; top:10px; height:24px; border-radius:6px; color:#fff; font-size:11px; font-weight:700; padding:4px 8px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; box-shadow:0 2px 6px rgba(0,0,0,.12); cursor:pointer; z-index:3; }
-.exp-visit-marker { position:absolute; top:6px; width:7px; height:32px; border-radius:4px; background:#4a9e7a; z-index:4; }
-.exp-deadline-marker { position:absolute; top:6px; width:7px; height:32px; border-radius:4px; background:var(--rose); z-index:4; }
+.exp-bar { position:absolute; top:50%; margin-top:-12px; height:24px; border-radius:6px; color:#fff; font-size:11px; font-weight:700; padding:4px 8px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; box-shadow:0 2px 6px rgba(0,0,0,.12); cursor:pointer; z-index:1; }
+.exp-visit-marker { position:absolute; top:50%; margin-top:-16px; width:7px; height:32px; border-radius:4px; background:#4a9e7a; z-index:2; }
+.exp-deadline-marker { position:absolute; top:50%; margin-top:-16px; width:7px; height:32px; border-radius:4px; background:var(--rose); z-index:2; }
 .exp-help { background:rgba(160,120,80,.06); border-radius:10px; padding:10px 14px; color:var(--ink-soft); font-size:12px; margin-top:12px; line-height:1.6; }
 .status-pill { display:inline-flex; align-items:center; gap:5px; background:rgba(160,120,80,.1); color:var(--accent); font-size:12px; font-weight:700; padding:4px 10px; border-radius:999px; }
 .month-count-chip { background:#fff; border:1px solid var(--line); border-radius:20px; padding:3px 10px; font-weight:600; color:var(--ink-soft); }
@@ -814,8 +814,8 @@ tr:hover td { background:rgba(160,120,80,.04); }
 <!-- ── 사이드바 ── -->
 <nav class="sidebar">
   <div class="sidebar-brand">
-    유나의 하루
-    <small>UNA LIFE DASHBOARD</small>
+    Cozy
+    <small>MY DAILY DASHBOARD</small>
   </div>
   <div class="search-wrap" style="margin-bottom:12px;">
     <input class="search-input" id="search-input" placeholder="🔍 검색..." oninput="handleSearch(this.value)" onfocus="handleSearch(this.value)">
@@ -1260,7 +1260,12 @@ tr:hover td { background:rgba(160,120,80,.04); }
           <option value="status">상태순</option>
         </select>
       </div>
-      <div id="exp-month-stats" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:12px;font-size:11.5px;color:var(--ink-soft);"></div>
+      <div id="exp-month-stats" style="display:flex;gap:8px;align-items:center;margin-bottom:12px;font-size:12.5px;color:var(--ink-soft);flex-wrap:wrap;">
+        <button class="cal-nav-btn" onclick="moveExpStatMonth(-1)" style="padding:3px 10px;">◀</button>
+        <span id="exp-month-stats-label" style="min-width:130px;text-align:center;font-weight:700;color:var(--accent);"></span>
+        <button class="cal-nav-btn" onclick="moveExpStatMonth(1)" style="padding:3px 10px;">▶</button>
+        <button class="btn btn-sm btn-outline" id="exp-stat-all-btn" onclick="toggleExpStatAll()">전체</button>
+      </div>
 
       <div class="exp-gantt-wrap">
         <div class="exp-gantt" id="exp-gantt-target"></div>
@@ -2361,8 +2366,23 @@ function expStatusClass(s) {
 let currentExpDate = new Date();
 let expOffset = 0; // 오늘 기준 일 오프셋
 let expShowDone = false; // 완료된 체험단 접기(기본 숨김) 여부
+let expStatMonthOffset = 0; // 월별 완료 통계에서 오늘 기준 몇 달 이동했는지
+let expStatShowAll = false; // 월별 통계에서 전체 기간 보기 모드
 function toggleExpShowDone() {
   expShowDone = !expShowDone;
+  renderExp();
+}
+function moveExpStatMonth(d) {
+  expStatShowAll = false;
+  expStatMonthOffset += d;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const target = new Date(today.getFullYear(), today.getMonth()+expStatMonthOffset, 15);
+  expOffset = Math.round((target - today) / 86400000);
+  renderExp();
+}
+function toggleExpStatAll() {
+  expStatShowAll = !expStatShowAll;
+  if(expStatShowAll) expOffset = 0;
   renderExp();
 }
 
@@ -2486,7 +2506,20 @@ function renderExp() {
   header+='</div>';
   target.innerHTML=header;
 
+  // 월별 완료 개수 (방문일 기준, 없으면 방문가능 시작일 기준) - 화살표로 월 이동, 전체보기 지원
+  const labelEl = document.getElementById('exp-month-stats-label');
+  const allBtn = document.getElementById('exp-stat-all-btn');
+  const statBase = new Date(todayBase.getFullYear(), todayBase.getMonth()+expStatMonthOffset, 1);
+  const statY = statBase.getFullYear(), statM = statBase.getMonth();
+  const statYm = `${statY}-${String(statM+1).padStart(2,'0')}`;
+
   let list=[...appData.experiences];
+  if(!expStatShowAll){
+    list = list.filter(e=>{
+      const d = e.visitDate || e.startDate;
+      return d && d.slice(0,7)===statYm;
+    });
+  }
   const doneCount = list.filter(e=>e.status==='완료').length;
   if(!expShowDone) list = list.filter(e=>e.status!=='완료');
   const sortVal=document.getElementById('exp-sort')?.value||'deadline';
@@ -2554,23 +2587,13 @@ function renderExp() {
   document.getElementById('exp-count-writing').innerText=appData.experiences.filter(e=>['방문 완료','작성 중','검수/수정'].includes(e.status)).length;
   document.getElementById('exp-count-done').innerText=appData.experiences.filter(e=>e.status==='완료').length;
 
-  // 월별 체험단 개수 (방문일 기준, 없으면 방문가능 시작일 기준)
-  const monthCounts = {};
-  appData.experiences.forEach(e=>{
-    const dateForMonth = e.visitDate || e.startDate;
-    if(!dateForMonth) return;
-    const ym = dateForMonth.slice(0,7);
-    monthCounts[ym] = (monthCounts[ym]||0)+1;
-  });
-  const sortedYm = Object.keys(monthCounts).sort();
-  const nowYmKey = `${todayBase.getFullYear()}-${String(todayBase.getMonth()+1).padStart(2,'0')}`;
-  const statsEl = document.getElementById('exp-month-stats');
-  if(statsEl){
-    statsEl.innerHTML = sortedYm.map(ym=>{
-      const m = parseInt(ym.split('-')[1]);
-      const isCur = ym===nowYmKey;
-      return `<span class="month-count-chip${isCur?' cur':''}">${m}월 ${monthCounts[ym]}개</span>`;
-    }).join('');
+  if(expStatShowAll){
+    const totalDone = appData.experiences.filter(e=>e.status==='완료').length;
+    if(labelEl) labelEl.innerText = `전체 완료 ${totalDone}개`;
+    if(allBtn) { allBtn.style.background='var(--accent)'; allBtn.style.color='#fff'; allBtn.style.borderColor='var(--accent)'; }
+  } else {
+    if(labelEl) labelEl.innerText = `${statY}년 ${statM+1}월 완료 ${doneCount}개`;
+    if(allBtn) { allBtn.style.background=''; allBtn.style.color=''; allBtn.style.borderColor=''; }
   }
 
   // 오늘이 화면 정중앙에 오도록 자동 스크롤
