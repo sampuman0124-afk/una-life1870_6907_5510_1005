@@ -54,28 +54,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --paper:   #F7F3EE;
-  --paper2:  #FDFAF6;
-  --ink:     #2C2820;
-  --ink-soft:#8A7F72;
-  --line:    #E8DDD0;
-  --line2:   #D9C9B6;
-  --accent:  #A07850;   /* warm walnut */
-  --accent2: #C4A882;   /* soft sand */
+  --paper:   #F4F6EF;
+  --paper2:  #FBFCF7;
+  --ink:     #242922;
+  --ink-soft:#7E8A7C;
+  --line:    #DEE6D6;
+  --line2:   #C7D4C0;
+  --accent:  #6B8E7A;   /* sage green */
+  --accent2: #A8C3AE;   /* soft sage mist */
   --rose:    #C0766A;   /* dusty rose */
   --sage:    #7A9E8E;   /* sage green */
   --love:    #C0527A;   /* love pink */
   --together:#8E7CC3;   /* 같이 하는 일정 - 라벤더 */
   --saturday:#3A6EA5;   /* 토요일 파란색 */
-  --shadow:  0 4px 24px rgba(44,40,32,.07);
-  --shadow2: 0 8px 36px rgba(44,40,32,.11);
+  --shadow:  0 4px 24px rgba(36,41,34,.07);
+  --shadow2: 0 8px 36px rgba(36,41,34,.11);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body {
   font-family:'Noto Sans KR',sans-serif;
   background-image:
-    radial-gradient(rgba(160,120,80,.07) 1px, transparent 1.3px),
-    radial-gradient(900px 400px at 90% -5%, rgba(160,120,80,.07), transparent 60%),
+    radial-gradient(rgba(107,142,122,.07) 1px, transparent 1.3px),
+    radial-gradient(900px 400px at 90% -5%, rgba(107,142,122,.07), transparent 60%),
     radial-gradient(700px 400px at -5% 105%, rgba(192,118,106,.06), transparent 55%);
   background-size: 22px 22px, auto, auto;
   background-repeat: repeat, no-repeat, no-repeat;
@@ -142,14 +142,14 @@ body {
 .hero::before {
   content:""; position:absolute; right:-30px; top:-30px;
   width:140px; height:140px;
-  background:radial-gradient(circle, rgba(160,120,80,.12), transparent 70%);
+  background:radial-gradient(circle, rgba(107,142,122,.12), transparent 70%);
   border-radius:50%;
 }
 .hero-top { display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:12px; }
 .hero-left {}
 .hero-eyebrow {
   font-size:11px; font-weight:700; letter-spacing:.1em; color:var(--accent);
-  background:rgba(160,120,80,.1); padding:3px 10px; border-radius:999px;
+  background:rgba(107,142,122,.1); padding:3px 10px; border-radius:999px;
   display:inline-block; margin-bottom:10px;
 }
 .hero-date {
@@ -162,7 +162,7 @@ body {
 .hero-illust { line-height:0; opacity:.9; }
 .hero-chip {
   display:inline-flex; align-items:center; gap:6px;
-  background:rgba(160,120,80,.08); border:1px solid rgba(160,120,80,.16);
+  background:rgba(107,142,122,.08); border:1px solid rgba(107,142,122,.16);
   border-radius:999px; padding:5px 12px; font-size:12px; font-weight:700;
   color:var(--accent); white-space:nowrap;
 }
@@ -219,7 +219,7 @@ body {
   font-family:'Nanum Myeongjo',serif; font-size:26px; font-weight:800; color:var(--accent);
 }
 .stat-card .stat-label { font-size:11px; color:var(--ink-soft); font-weight:500; margin-top:2px; }
-.stat-card:hover { border-color:var(--accent2); box-shadow:0 4px 16px rgba(160,120,80,.15); transform:translateY(-1px); transition:.15s; }
+.stat-card:hover { border-color:var(--accent2); box-shadow:0 4px 16px rgba(107,142,122,.15); transform:translateY(-1px); transition:.15s; }
 
 /* ── 투두 아이템 ── */
 .todo-item {
@@ -259,9 +259,9 @@ body {
 .add-row button:hover, .btn:hover { filter:brightness(1.08); }
 .btn-outline {
   background:#fff; color:var(--accent);
-  border:1px solid rgba(160,120,80,.35);
+  border:1px solid rgba(107,142,122,.35);
 }
-.btn-outline:hover { background:rgba(160,120,80,.07); filter:none; }
+.btn-outline:hover { background:rgba(107,142,122,.07); filter:none; }
 .btn-sm { padding:6px 12px; font-size:12px; border-radius:8px; }
 .btn-danger { background:var(--rose); }
 .btn-sage { background:var(--sage); }
@@ -303,15 +303,15 @@ body {
 /* ── 우선순위 ── */
 .priority { display:inline-block; font-size:10.5px; font-weight:800; padding:2px 7px; border-radius:999px; }
 .priority.high { background:rgba(192,118,106,.13); color:var(--rose); }
-.priority.mid { background:rgba(160,120,80,.13); color:var(--accent); }
+.priority.mid { background:rgba(107,142,122,.13); color:var(--accent); }
 .priority.low { background:rgba(138,130,114,.12); color:var(--ink-soft); }
 
 /* ── 테이블 ── */
 table { width:100%; border-collapse:collapse; font-size:12.5px; margin-top:8px; }
 th, td { border-bottom:1px solid var(--line); padding:8px 10px; text-align:left; }
-th { background:rgba(160,120,80,.07); color:var(--ink-soft); font-weight:700; font-size:11.5px; }
+th { background:rgba(107,142,122,.07); color:var(--ink-soft); font-weight:700; font-size:11.5px; }
 tr:last-child td { border-bottom:none; }
-tr:hover td { background:rgba(160,120,80,.04); }
+tr:hover td { background:rgba(107,142,122,.04); }
 
 /* ── 캘린더 ── */
 .cal-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
@@ -325,7 +325,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
 .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); }
 .cal-day-label {
   text-align:center; font-size:11px; font-weight:700; color:var(--ink-soft);
-  padding:9px 2px; background:rgba(160,120,80,.07);
+  padding:9px 2px; background:rgba(107,142,122,.07);
   border-bottom:1px solid var(--line);
 }
 .cal-cell {
@@ -337,8 +337,8 @@ tr:hover td { background:rgba(160,120,80,.04); }
 .cal-cell.other-month:hover { background:rgba(0,0,0,.03); }
 .cal-num { padding:7px 7px 4px; font-size:13.5px; font-weight:600; color:var(--ink-soft); }
 .cal-cell:nth-child(7n) { border-right:none; }
-.cal-cell:hover { background:rgba(160,120,80,.05); }
-.cal-cell.today { background:rgba(160,120,80,.09); }
+.cal-cell:hover { background:rgba(107,142,122,.05); }
+.cal-cell.today { background:rgba(107,142,122,.09); }
 .cal-num { font-size:13.5px; font-weight:600; color:var(--ink-soft); margin-bottom:3px; }
 .cal-ev {
   font-size:12px; font-weight:700; padding:3px 7px;
@@ -355,10 +355,10 @@ tr:hover td { background:rgba(160,120,80,.04); }
 .cal-ev.ev-end    { border-radius:0 6px 6px 0; margin-left:0; margin-right:2px; margin-bottom:2px; }
 /* 오늘 강조 */
 .exp-today-line {
-  position:absolute; top:0; width:3px; height:100%; background:#A07850; z-index:10; pointer-events:none;
+  position:absolute; top:0; width:3px; height:100%; background:#6B8E7A; z-index:10; pointer-events:none;
 }
 .exp-today-label {
-  position:absolute; top:0; background:#A07850; color:#fff;
+  position:absolute; top:0; background:#6B8E7A; color:#fff;
   font-size:10px; font-weight:800; padding:2px 5px; border-radius:0 0 5px 0; z-index:11; white-space:nowrap;
 }
 
@@ -413,7 +413,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
 
 /* ── 팝업 ── */
 .popup-bg {
-  position:fixed; inset:0; background:rgba(44,40,32,.4);
+  position:fixed; inset:0; background:rgba(36,41,34,.4);
   display:none; align-items:center; justify-content:center; z-index:100; padding:20px;
 }
 .popup-bg.open { display:flex; }
@@ -441,15 +441,15 @@ tr:hover td { background:rgba(160,120,80,.04); }
   background:#fff; cursor:pointer; font-size:12px; font-weight:700;
   font-family:inherit; color:var(--ink-soft); transition:.15s;
 }
-.type-btn.active-mine { border-color:var(--accent); background:rgba(160,120,80,.08); color:var(--accent); }
+.type-btn.active-mine { border-color:var(--accent); background:rgba(107,142,122,.08); color:var(--accent); }
 .type-btn.active-bf { border-color:var(--love); background:rgba(192,82,122,.08); color:var(--love); }
 .type-btn.active-together { border-color:var(--together); background:rgba(142,124,195,.08); color:var(--together); }
 
 /* ── 시간표 ── */
 .timetable { width:100%; table-layout:fixed; border-collapse:collapse; text-align:center; }
 .timetable th, .timetable td { border:1px solid var(--line); padding:3px; font-size:11.5px; height:34px; vertical-align:middle; }
-.timetable th { background:rgba(160,120,80,.08); color:var(--ink); font-weight:700; }
-.timetable td.time-label { background:rgba(160,120,80,.04); color:var(--ink-soft); font-size:10.5px; font-weight:700; width:70px; }
+.timetable th { background:rgba(107,142,122,.08); color:var(--ink); font-weight:700; }
+.timetable td.time-label { background:rgba(107,142,122,.04); color:var(--ink-soft); font-size:10.5px; font-weight:700; width:70px; }
 .tt-cell { border-radius:5px; color:#fff; font-weight:700; font-size:11px; padding:2px; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; transition:opacity .15s; }
 .tt-cell:hover { opacity:.85; }
 .tt-cell .tt-room { font-size:9.5px; font-weight:400; opacity:.9; }
@@ -471,7 +471,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
 .exp-gantt-wrap { border:1px solid var(--line); border-radius:12px; overflow:auto; background:#fff; margin-top:10px; }
 .exp-gantt { min-width:980px; }
 .exp-gantt-header, .exp-gantt-row { display:grid; align-items:stretch; }
-.exp-gantt-header > div { background:rgba(160,120,80,.07); border-right:1px solid var(--line); border-bottom:1px solid var(--line2); padding:6px 3px; text-align:center; font-size:11px; font-weight:700; color:var(--ink-soft); }
+.exp-gantt-header > div { background:rgba(107,142,122,.07); border-right:1px solid var(--line); border-bottom:1px solid var(--line2); padding:6px 3px; text-align:center; font-size:11px; font-weight:700; color:var(--ink-soft); }
 .exp-gantt-row { min-height:44px; position:relative; border-bottom:1px solid var(--line); align-items:center; }
 .exp-gantt-name { padding:8px; border-right:1px solid var(--line); font-weight:700; font-size:12px; display:flex; gap:5px; align-items:center; background:#fff; position:sticky; left:0; z-index:5; min-width:220px; box-shadow:2px 0 4px rgba(0,0,0,.05); }
 .exp-dot { width:9px; height:9px; border-radius:50%; display:inline-block; flex-shrink:0; }
@@ -489,14 +489,14 @@ tr:hover td { background:rgba(160,120,80,.04); }
 .exp-table-wrap th:first-child { background:#F3EAE0; z-index:3; }
 .exp-table-wrap td:first-child { background:var(--paper2); }
 .exp-day-cell { border-right:1px solid rgba(0,0,0,.04); background:#fff; }
-.exp-day-cell.today { background:rgba(160,120,80,.06); }
+.exp-day-cell.today { background:rgba(107,142,122,.06); }
 .exp-bar { position:absolute; top:50%; margin-top:-12px; height:24px; border-radius:6px; font-size:11px; font-weight:700; padding:4px 8px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; box-shadow:0 1px 3px rgba(0,0,0,.06); cursor:pointer; z-index:1; }
 .exp-visit-marker { position:absolute; top:50%; margin-top:-16px; width:7px; height:32px; border-radius:4px; background:#4a9e7a; z-index:2; }
 .exp-deadline-marker { position:absolute; top:50%; margin-top:-16px; width:7px; height:32px; border-radius:4px; background:var(--rose); z-index:2; }
-.exp-help { background:rgba(160,120,80,.06); border-radius:10px; padding:10px 14px; color:var(--ink-soft); font-size:12px; margin-top:12px; line-height:1.6; }
-.status-pill { display:inline-flex; align-items:center; gap:5px; background:rgba(160,120,80,.1); color:var(--accent); font-size:12px; font-weight:700; padding:4px 10px; border-radius:999px; }
+.exp-help { background:rgba(107,142,122,.06); border-radius:10px; padding:10px 14px; color:var(--ink-soft); font-size:12px; margin-top:12px; line-height:1.6; }
+.status-pill { display:inline-flex; align-items:center; gap:5px; background:rgba(107,142,122,.1); color:var(--accent); font-size:12px; font-weight:700; padding:4px 10px; border-radius:999px; }
 .month-count-chip { background:#fff; border:1px solid var(--line); border-radius:20px; padding:3px 10px; font-weight:600; color:var(--ink-soft); }
-.month-count-chip.cur { background:rgba(160,120,80,.14); color:var(--accent); border-color:var(--accent); }
+.month-count-chip.cur { background:rgba(107,142,122,.14); color:var(--accent); border-color:var(--accent); }
 .platform-badge { display:inline-block; font-size:10px; font-weight:800; padding:2px 6px; border-radius:999px; color:#fff; }
 .platform-badge.blog { background:#48bb78; }
 .platform-badge.review { background:#4299e1; }
@@ -526,8 +526,8 @@ tr:hover td { background:rgba(160,120,80,.04); }
 .cal-compact .cal-ev-time { font-size:8px; }
 
 /* ── 시간표 매트릭스 ── */
-.timetable-cell-box { border-radius:6px; color:#fff; font-size:11.5px; font-weight:700; padding:4px 6px; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; }
-.timetable-cell-box .room { font-size:10px; font-weight:400; opacity:.85; }
+.timetable-cell-box { border-radius:10px; font-size:11.5px; font-weight:700; padding:6px 8px; height:calc(100% - 6px); margin:3px; box-sizing:border-box; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; box-shadow:0 1px 3px rgba(0,0,0,.05); line-height:1.35; }
+.timetable-cell-box .room { font-size:10px; font-weight:500; opacity:.75; margin-top:1px; }
 .del-tt-btn { position:absolute; top:2px; right:2px; background:rgba(0,0,0,.25); border:none; color:#fff; border-radius:50%; width:16px; height:16px; font-size:11px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
 .del-tt-btn:hover { background:rgba(0,0,0,.5); }
 
@@ -562,7 +562,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
 .money-amount.expense { color:var(--rose); }
 .money-tag {
   font-size:10.5px; font-weight:700; padding:2px 7px; border-radius:999px;
-  background:rgba(160,120,80,.1); color:var(--accent); white-space:nowrap;
+  background:rgba(107,142,122,.1); color:var(--accent); white-space:nowrap;
 }
 .bar-wrap { background:var(--line); border-radius:999px; height:7px; overflow:hidden; margin-top:6px; }
 .bar-fill { height:100%; border-radius:999px; transition:.4s; }
@@ -600,13 +600,13 @@ tr:hover td { background:rgba(160,120,80,.04); }
 .income-plan-amt { font-size:12px; color:#4a9e7a; font-weight:700; }
 .income-plan-del { border:none; background:none; cursor:pointer; color:var(--ink-soft); opacity:.3; font-size:16px; transition:.15s; padding:0 3px; }
 .income-plan-del:hover { opacity:1; color:var(--rose); }
-.saving-goal-box { background:linear-gradient(135deg, rgba(160,120,80,.08), rgba(160,120,80,.04)); border:1px solid rgba(160,120,80,.2); border-radius:12px; padding:14px 16px; }
+.saving-goal-box { background:linear-gradient(135deg, rgba(107,142,122,.08), rgba(107,142,122,.04)); border:1px solid rgba(107,142,122,.2); border-radius:12px; padding:14px 16px; }
 .saving-progress { height:10px; background:var(--line); border-radius:999px; overflow:hidden; margin:8px 0 4px; }
 .saving-progress-fill { height:100%; border-radius:999px; background:linear-gradient(90deg, var(--accent), #e0b87a); transition:.5s; }
 
 /* ── 주간 스트립 ── */
 .week-day-col { border-radius:10px; padding:8px 4px; text-align:center; background:#fff; border:1px solid var(--line); min-height:90px; }
-.week-day-col.today { background:rgba(160,120,80,.08); border-color:var(--accent2); }
+.week-day-col.today { background:rgba(107,142,122,.08); border-color:var(--accent2); }
 .week-day-label { font-size:11px; font-weight:700; color:var(--ink-soft); margin-bottom:2px; }
 .week-day-num { font-family:'Nanum Myeongjo',serif; font-weight:800; font-size:18px; color:var(--ink); margin-bottom:4px; line-height:1; }
 .week-day-col.today .week-day-num { color:var(--accent); }
@@ -623,7 +623,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
   padding:9px 36px 9px 14px; color:var(--ink);
   transition:.15s;
 }
-.search-input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(160,120,80,.1); }
+.search-input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(107,142,122,.1); }
 .search-icon { position:absolute; right:11px; top:50%; transform:translateY(-50%); color:var(--ink-soft); font-size:15px; pointer-events:none; }
 .search-results {
   position:absolute; top:calc(100% + 6px); left:0; right:0;
@@ -638,7 +638,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
   cursor:pointer; transition:.1s; font-size:13px;
 }
 .search-result-item:last-child { border-bottom:none; }
-.search-result-item:hover { background:rgba(160,120,80,.05); }
+.search-result-item:hover { background:rgba(107,142,122,.05); }
 .search-result-icon { font-size:15px; width:22px; text-align:center; flex-shrink:0; }
 .search-result-title { font-weight:600; flex:1; }
 .search-result-meta { font-size:11.5px; color:var(--ink-soft); }
@@ -668,9 +668,9 @@ tr:hover td { background:rgba(160,120,80,.04); }
 .week-list-header {
   padding:8px 10px; border-bottom:1px solid var(--line);
   display:flex; align-items:baseline; gap:6px;
-  background:rgba(160,120,80,.04);
+  background:rgba(107,142,122,.04);
 }
-.week-list-header.today { background:rgba(160,120,80,.1); }
+.week-list-header.today { background:rgba(107,142,122,.1); }
 .week-list-dow { font-size:11px; font-weight:700; color:var(--ink-soft); }
 .week-list-day { font-family:'Nanum Myeongjo',serif; font-weight:800; font-size:18px; color:var(--ink); }
 .week-list-col.today .week-list-dow { color:var(--accent); }
@@ -690,7 +690,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
 
 /* ── 체험단 상태 색상 ── */
 .exp-status { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; }
-.exp-status.s0 { background:rgba(160,120,80,.12); color:var(--accent); }       /* 방문 전 */
+.exp-status.s0 { background:rgba(107,142,122,.12); color:var(--accent); }       /* 방문 전 */
 .exp-status.s1 { background:rgba(74,158,122,.12); color:#4a9e7a; }             /* 예약 완료 */
 .exp-status.s2 { background:rgba(122,158,142,.12); color:var(--sage); }        /* 방문 완료 */
 .exp-status.s3 { background:rgba(159,122,234,.12); color:#9f7aea; }            /* 작성 중 */
@@ -712,7 +712,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
   color:var(--ink); background:#fff; transition:.15s; outline:none;
   -webkit-text-security:disc;
 }
-.pin-dot:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(160,120,80,.12); }
+.pin-dot:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(107,142,122,.12); }
 .diary-cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
 .diary-cal-cell {
   border-radius:8px; display:flex; flex-direction:column;
@@ -721,14 +721,14 @@ tr:hover td { background:rgba(160,120,80,.04); }
   color:var(--ink-soft); position:relative; padding:4px 2px; min-height:34px;
   overflow:hidden;
 }
-.diary-cal-cell:hover { border-color:var(--accent2); background:rgba(160,120,80,.04); }
-.diary-cal-cell.today { border-color:var(--accent); background:rgba(160,120,80,.07); color:var(--accent); font-weight:800; }
+.diary-cal-cell:hover { border-color:var(--accent2); background:rgba(107,142,122,.04); }
+.diary-cal-cell.today { border-color:var(--accent); background:rgba(107,142,122,.07); color:var(--accent); font-weight:800; }
 .diary-cal-cell.has-diary { background:#fff; }
 .diary-cal-cell .diary-emoji { font-size:16px; line-height:1; }
 .diary-cal-cell .diary-date-num { font-size:11px; margin-top:1px; }
 .diary-cal-cell.empty { background:transparent; border:none; cursor:default; }
 .diary-popup-bg {
-  position:fixed; inset:0; background:rgba(44,40,32,.45);
+  position:fixed; inset:0; background:rgba(36,41,34,.45);
   display:none; align-items:center; justify-content:center; z-index:300; padding:20px;
 }
 .diary-popup-bg.open { display:flex; }
@@ -743,8 +743,8 @@ tr:hover td { background:rgba(160,120,80,.04); }
   font-size:22px; padding:6px 8px; border-radius:10px; border:2px solid transparent;
   background:#fff; cursor:pointer; transition:.15s; line-height:1;
 }
-.diary-emoji-btn:hover { border-color:var(--accent2); background:rgba(160,120,80,.06); }
-.diary-emoji-btn.selected { border-color:var(--accent); background:rgba(160,120,80,.1); }
+.diary-emoji-btn:hover { border-color:var(--accent2); background:rgba(107,142,122,.06); }
+.diary-emoji-btn.selected { border-color:var(--accent); background:rgba(107,142,122,.1); }
 .diary-textarea {
   width:100%; min-height:200px; font-family:'Noto Sans KR',sans-serif; font-size:14px;
   line-height:1.8; border:1px solid var(--line2); border-radius:12px;
@@ -753,7 +753,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
 }
 .diary-textarea:focus { outline:none; border-color:var(--accent); }
 .diary-textarea::placeholder { color:var(--line2); }
-.diary-textarea[readonly] { background:rgba(160,120,80,.04); color:var(--ink); cursor:default; }
+.diary-textarea[readonly] { background:rgba(107,142,122,.04); color:var(--ink); cursor:default; }
 .diary-emoji-btn:disabled { opacity:.45; cursor:default; }
 .diary-popup-acts { display:flex; gap:8px; }
 .diary-popup-acts button { flex:1; font-family:inherit; font-weight:700; font-size:13.5px; border-radius:10px; padding:10px; cursor:pointer; border:1px solid var(--line2); background:#fff; color:var(--ink); transition:.15s; }
@@ -917,6 +917,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
         </div>
         <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
           <span class="hero-chip" id="hero-today-chip">오늘 정보 불러오는 중...</span>
+          <span class="hero-chip" id="hero-fortune-chip" style="background:rgba(142,124,195,.1);border-color:rgba(142,124,195,.22);color:#8E7CC3;white-space:nowrap;text-align:left;border-radius:14px;padding:8px 14px;">🔮 오늘의 운세 불러오는 중...</span>
         </div>
       </div>
     </div>
@@ -1076,7 +1077,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
           <ellipse cx="10" cy="21" rx="8" ry="7" fill="#F3EAE0"/>
           <ellipse cx="34" cy="20" rx="10" ry="8" fill="#F3EAE0"/>
           <circle cx="6" cy="8" r="1.6" fill="#7A9E8E" opacity="0.55"/>
-          <circle cx="14" cy="4" r="1.2" fill="#A07850" opacity="0.6"/>
+          <circle cx="14" cy="4" r="1.2" fill="#6B8E7A" opacity="0.6"/>
         </svg>
       </div>
       <div class="card-title" id="tt-form-title">🕐 학년/학기별 시간표 등록</div>
@@ -1129,7 +1130,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
           <option value="14">14교시 종료 (23:00)</option>
           <option value="15">15교시 종료 (24:00)</option>
         </select>
-        <input type="color" id="tt-color" value="#A07850">
+        <input type="color" id="tt-color" value="#6B8E7A">
         <button class="btn" id="tt-submit-btn" onclick="saveTimetable()">등록</button>
         <button class="btn btn-danger" id="tt-cancel-btn" onclick="cancelTimetableEdit()" style="display:none;">취소</button>
       </div>
@@ -1145,7 +1146,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
           <ellipse cx="22" cy="24" rx="16" ry="10" fill="#F3EAE0"/>
           <ellipse cx="10" cy="21" rx="8" ry="7" fill="#F3EAE0"/>
           <ellipse cx="34" cy="20" rx="10" ry="8" fill="#F3EAE0"/>
-          <circle cx="6" cy="8" r="1.6" fill="#A07850" opacity="0.55"/>
+          <circle cx="6" cy="8" r="1.6" fill="#6B8E7A" opacity="0.55"/>
           <circle cx="14" cy="4" r="1.2" fill="#C0766A" opacity="0.6"/>
         </svg>
       </div>
@@ -1180,7 +1181,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
         <span>📋 목록</span>
         <button class="btn btn-sm btn-outline" id="task-showall-btn" onclick="toggleTaskShowAll()">전체보기</button>
       </div>
-      <div id="task-bulk-bar" style="display:none;align-items:center;gap:8px;margin:10px 0;padding:8px 10px;background:rgba(160,120,80,.07);border-radius:8px;flex-wrap:wrap;">
+      <div id="task-bulk-bar" style="display:none;align-items:center;gap:8px;margin:10px 0;padding:8px 10px;background:rgba(107,142,122,.07);border-radius:8px;flex-wrap:wrap;">
         <span style="font-size:12.5px;color:var(--ink-soft);"><b id="task-bulk-count">0</b>개 선택됨</span>
         <button class="btn btn-sm btn-sage" onclick="bulkCompleteTasks()">✓ 완료 처리</button>
         <button class="btn btn-sm btn-danger" onclick="bulkDeleteTasks()">🗑 삭제</button>
@@ -1294,7 +1295,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
         <input type="text" id="exp-reward" placeholder="원고료/제공내역" style="flex:1;">
         <input type="text" id="exp-region" placeholder="지역" style="width:80px;">
         <input type="text" id="exp-memo" placeholder="메모" style="flex:1;">
-        <input type="color" id="exp-color" value="#A07850">
+        <input type="color" id="exp-color" value="#6B8E7A">
         <button class="btn" id="exp-submit-btn" onclick="saveExperience()">등록</button>
         <button class="btn btn-danger" id="exp-cancel-btn" onclick="cancelExpEdit()" style="display:none;">취소</button>
       </div>
@@ -1662,7 +1663,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
     </div>
     <div class="popup-field" style="display:flex;align-items:center;gap:10px;">
       <label style="margin:0;">색상</label>
-      <input type="color" id="pop-color" value="#A07850" style="width:40px;height:32px;border-radius:7px;border:1px solid var(--line2);padding:2px;cursor:pointer;">
+      <input type="color" id="pop-color" value="#6B8E7A" style="width:40px;height:32px;border-radius:7px;border:1px solid var(--line2);padding:2px;cursor:pointer;">
     </div>
     <div class="popup-acts">
       <button class="save" id="pop-save-btn" onclick="savePopEvent()">등록</button>
@@ -1740,6 +1741,51 @@ function initHero() {
   document.getElementById('hero-sub').innerText = greetings;
 
   updateHeroTodaySummary();
+  updateHeroFortune();
+}
+
+// 오늘의 운세 (재미로 보는 버전 - 매일 같은 날엔 같은 문구, 자정 지나면 자동으로 바뀜)
+const FORTUNE_MESSAGES = [
+  "오늘은 뜻밖의 좋은 소식이 있을 예감이에요 ✨",
+  "작은 행운이 자꾸 따라다니는 하루예요 🍀",
+  "미루던 일을 시작하기 딱 좋은 날이에요 📌",
+  "생각보다 일이 술술 풀릴 거예요 🌿",
+  "오늘 만나는 사람이 좋은 기운을 줄 거예요 💫",
+  "잠깐의 휴식이 큰 힘이 되는 하루예요 ☁️",
+  "먹고 싶었던 걸 먹으면 기분이 확 좋아질 거예요 🍰",
+  "생각지도 못한 곳에서 칭찬을 들을 수 있어요 🌸",
+  "오늘은 뭘 해도 예쁘게 나오는 날이에요 📷",
+  "작은 실수쯤은 웃어넘길 수 있는 여유로운 하루예요 😊",
+  "누군가에게 받은 연락이 하루를 기분 좋게 만들어줘요 💌",
+  "계획한 일을 하나씩 지워나가는 재미가 있는 날이에요 ✅",
+  "잠을 푹 자고 일어나면 컨디션이 최고일 거예요 🌙",
+  "오늘따라 유독 운이 좋게 흘러가는 하루예요 🍀",
+  "새로운 걸 시도해보면 의외로 잘 맞을 수 있어요 🌟",
+  "받고 싶었던 선물 같은 우연이 생길지도 몰라요 🎁",
+  "오늘은 마음먹은 대로 하루가 흘러갈 거예요 🌤️",
+  "따뜻한 말 한마디가 하루를 채워줄 거예요 💬",
+  "여유롭게 흘러가는 하루, 오늘은 서두르지 않아도 돼요 🐢",
+  "생각보다 빨리 끝나는 일이 있어서 여유가 생길 거예요 ⏰",
+  "좋아하는 사람과의 시간이 유난히 편안하게 느껴져요 💛",
+  "작은 목표 하나를 이루면서 뿌듯함을 느낄 하루예요 🌱",
+  "예상치 못한 곳에서 도움을 받게 될 수 있어요 🤝",
+  "평소보다 집중이 잘 되는 날이에요, 미뤘던 것부터 해보세요 📚",
+  "오늘 하루는 나 자신에게 조금 더 다정해도 괜찮아요 🤍",
+  "괜히 기분 좋은 예감이 드는 하루, 믿어봐도 좋아요 🔮",
+  "작은 우연들이 모여서 웃음짓게 되는 하루예요 😄",
+  "오늘은 유독 하늘이 예뻐 보일 거예요, 잠깐 올려다보세요 🌈",
+  "미뤄뒀던 연락을 하면 좋은 답이 돌아올 거예요 📱",
+  "오늘의 선택이 나중에 좋은 결과로 돌아올 거예요 🌷"
+];
+function updateHeroFortune() {
+  const el = document.getElementById('hero-fortune-chip');
+  if(!el) return;
+  const now = new Date();
+  const ds = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  let hash = 0;
+  for(let i=0;i<ds.length;i++){ hash = (hash*31 + ds.charCodeAt(i)) >>> 0; }
+  const idx = hash % FORTUNE_MESSAGES.length;
+  el.innerText = `🔮 ${FORTUNE_MESSAGES[idx]}`;
 }
 
 // 오늘 일정/할일 요약 칩
@@ -1896,7 +1942,7 @@ function selectCalType(t) {
   formCalType = t;
   document.getElementById('cal-type-mine').className = 'type-btn' + (t==='mine'?' active-mine':'');
   document.getElementById('cal-type-bf').className = 'type-btn' + (t==='bf'?' active-bf':'');
-  document.getElementById('cal-color').value = t==='mine' ? '#A07850' : '#C0527A';
+  document.getElementById('cal-color').value = t==='mine' ? '#6B8E7A' : '#C0527A';
 }
 function getEventList(type) {
   if(type==='mine') return appData.mineEvents;
@@ -1908,7 +1954,7 @@ function selectPopType(t) {
   document.getElementById('pop-type-mine').className = 'type-btn' + (t==='mine'?' active-mine':'');
   document.getElementById('pop-type-bf').className = 'type-btn' + (t==='bf'?' active-bf':'');
   document.getElementById('pop-type-together').className = 'type-btn' + (t==='together'?' active-together':'');
-  document.getElementById('pop-color').value = t==='mine' ? '#A07850' : t==='bf' ? '#C0527A' : '#8E7CC3';
+  document.getElementById('pop-color').value = t==='mine' ? '#6B8E7A' : t==='bf' ? '#C0527A' : '#8E7CC3';
 }
 function addCalEvent() {
   const title = document.getElementById('cal-title').value.trim();
@@ -1939,7 +1985,7 @@ function openCalPopup(dateStr) {
   document.getElementById('pop-end').value = dateStr;
   document.getElementById('pop-time-start').value = '';
   document.getElementById('pop-time-end').value = '';
-  document.getElementById('pop-color').value = '#A07850';
+  document.getElementById('pop-color').value = '#6B8E7A';
   const eid = document.getElementById('pop-edit-id'); if(eid) eid.value = '';
   const etype = document.getElementById('pop-edit-type'); if(etype) etype.value = '';
   const tr = document.getElementById('pop-type-row'); if(tr) tr.style.display = '';
@@ -1974,9 +2020,16 @@ function savePopEvent() {
 
   const repeat = document.getElementById('pop-repeat')?.value || 'none';
   if(editId) {
-    const list = getEventList(editType);
-    const idx = list.findIndex(x=>String(x.id)===String(editId));
-    if(idx!==-1) { list[idx].title=title; list[idx].startDate=start; list[idx].endDate=end; list[idx].color=color; list[idx].timeStart=timeStart; list[idx].timeEnd=timeEnd; }
+    const oldList = getEventList(editType);
+    const idx = oldList.findIndex(x=>String(x.id)===String(editId));
+    if(idx!==-1) {
+      const ev = oldList[idx];
+      ev.title=title; ev.startDate=start; ev.endDate=end; ev.color=color; ev.timeStart=timeStart; ev.timeEnd=timeEnd;
+      if(calPopType !== editType) {
+        oldList.splice(idx,1);
+        getEventList(calPopType).push(ev);
+      }
+    }
   } else {
     const ev = { id:Date.now(), title, startDate:start, endDate:end, color, repeat, timeStart, timeEnd };
     const list = getEventList(calPopType);
@@ -2008,9 +2061,8 @@ function editEvent(id, type) {
   document.getElementById('pop-end').value = ev.endDate;
   document.getElementById('pop-time-start').value = ev.timeStart || '';
   document.getElementById('pop-time-end').value = ev.timeEnd || '';
-  document.getElementById('pop-color').value = ev.color || '#A07850';
   selectPopType(type);
-  const typeRow = document.getElementById('pop-type-row'); if(typeRow) typeRow.style.display = 'none';
+  document.getElementById('pop-color').value = ev.color || '#6B8E7A';
   const rf = document.getElementById('pop-repeat-field'); if(rf) rf.style.display = 'none';
   const sb = document.getElementById('pop-save-btn'); if(sb) sb.innerText = '수정 완료';
   const db = document.getElementById('pop-delete-btn'); if(db) db.style.display = 'block';
@@ -2056,7 +2108,7 @@ function fmtTimeRange(ev) {
   return ev.timeEnd ? `${ev.timeStart}-${ev.timeEnd}` : ev.timeStart;
 }
 function hexToRgb(hex) {
-  hex = (hex||'#A07850').replace('#','');
+  hex = (hex||'#6B8E7A').replace('#','');
   if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
   const num = parseInt(hex,16);
   if(isNaN(num)) return { r:160, g:120, b:80 };
@@ -2148,9 +2200,9 @@ function buildCalendarGrid(year, month) {
       const cls = isSingle?'ev-single':isStart||isWeekStart?'ev-start':isEnd?'ev-end':'ev-mid';
       const showTitle = isStart || isWeekStart;
       const timeLabel = fmtTimeRange(ev);
-      const {r,g,b} = hexToRgb(ev.color||'#A07850');
+      const {r,g,b} = hexToRgb(ev.color||'#6B8E7A');
       const bg = `rgba(${r},${g},${b},0.16)`;
-      const txtColor = ev.color||'#A07850';
+      const txtColor = ev.color||'#6B8E7A';
       const clickFn = ev._etype==='experience' ? `editExperience(${ev.id})` : `editEvent(${ev.id},'${ev._etype}')`;
       evHtml+=`<div class="cal-ev ${cls}" style="background:${bg};color:${txtColor};" onclick="event.stopPropagation();${clickFn}"><span class="cal-ev-title">${showTitle?ev.title:''}</span>${showTitle&&timeLabel?`<span class="cal-ev-time">${timeLabel}</span>`:''}</div>`;
     }
@@ -2310,7 +2362,11 @@ function drawTimetableMatrix() {
           let td=document.createElement('td');
           td.rowSpan=(mc.end-mc.start)+1;
           td.style.padding='2px'; td.style.verticalAlign='top';
-          td.innerHTML=`<div class="timetable-cell-box" style="background:${mc.color};min-height:${(mc.end-mc.start+1)*38}px" onclick="editTimetable(${mc.id})"><button class="del-tt-btn" onclick="deleteTimetable(${mc.id},event)">×</button><div>${mc.subject}</div>${mc.room?`<div class="room">${mc.room}</div>`:''}</div>`;
+          const {r,g,b} = hexToRgb(mc.color||'#6B8E7A');
+          const boxBg = `rgba(${r},${g},${b},0.16)`;
+          const boxBorder = `1.5px solid rgba(${r},${g},${b},0.4)`;
+          const boxText = mc.color||'#6B8E7A';
+          td.innerHTML=`<div class="timetable-cell-box" style="background:${boxBg};border:${boxBorder};color:${boxText};min-height:${(mc.end-mc.start+1)*38}px" onclick="editTimetable(${mc.id})"><button class="del-tt-btn" onclick="deleteTimetable(${mc.id},event)">×</button><div>${mc.subject}</div>${mc.room?`<div class="room">${mc.room}</div>`:''}</div>`;
           tr.appendChild(td);
         } else if(!mc){ tr.innerHTML+=`<td></td>`; }
       }
@@ -2536,7 +2592,7 @@ function editExperience(id) {
   document.getElementById('exp-reward').value = e.reward||'';
   document.getElementById('exp-region').value = e.region||'';
   document.getElementById('exp-memo').value = e.memo||'';
-  document.getElementById('exp-color').value = e.color||'#A07850';
+  document.getElementById('exp-color').value = e.color||'#6B8E7A';
   document.getElementById('exp-submit-btn').innerText = '수정 완료';
   document.getElementById('exp-cancel-btn').style.display = 'inline-block';
   switchTab('experience');
@@ -2583,7 +2639,7 @@ function renderExp() {
   dates.forEach(d=>{
     const sun=d.getDay()===0, sat=d.getDay()===6, first=d.getDate()===1;
     const isToday=d.getTime()===todayOnly.getTime();
-    const bg=isToday?'background:#A07850;color:#fff;padding-left:0;padding-right:0;':first?'background:rgba(160,120,80,.12);':'';
+    const bg=isToday?'background:#6B8E7A;color:#fff;padding-left:0;padding-right:0;':first?'background:rgba(107,142,122,.12);':'';
     const fc=isToday?'':sun?'color:#C0527A;':sat?'color:#3A6EA5;':'';
     const todayMark=isToday?'<br><span style="font-size:7px;font-weight:800;letter-spacing:-0.4px;white-space:nowrap;">TODAY</span>':'';
     header+=`<div style="${bg}${fc}">${first&&!isToday?(d.getMonth()+1)+'/':''}${d.getDate()}${todayMark}<br><span style="font-weight:400">${isToday?'':dayNames[d.getDay()]}</span></div>`;
@@ -2629,7 +2685,7 @@ function renderExp() {
     const row=document.createElement('div');
     row.className='exp-gantt-row';
     row.style.gridTemplateColumns=`${nameW}px repeat(${dates.length},${colW}px)`;
-    row.innerHTML=`<div class="exp-gantt-name"><span class="exp-dot" style="background:${e.color||'#A07850'}"></span>${platformBadge(e.platform)}<span class="exp-name-text">${e.name}</span></div>`;
+    row.innerHTML=`<div class="exp-gantt-name"><span class="exp-dot" style="background:${e.color||'#6B8E7A'}"></span>${platformBadge(e.platform)}<span class="exp-name-text">${e.name}</span></div>`;
     dates.forEach(d=>{ row.innerHTML+=`<div class="exp-day-cell${d.getTime()===todayOnly.getTime()?' today':''}"></div>`; });
 
     const rs=getDateOnly(e.startDate), re=getDateOnly(e.endDate);
@@ -2639,7 +2695,7 @@ function renderExp() {
     bar.className='exp-bar';
     bar.style.left=(nameW+si*colW+4)+'px';
     bar.style.width=((ei-si+1)*colW-8)+'px';
-    const barColor = e.color||'#A07850';
+    const barColor = e.color||'#6B8E7A';
     const {r,g,b} = hexToRgb(barColor);
     bar.style.background = `rgba(${r},${g},${b},0.18)`;
     bar.style.border = `1.5px solid rgba(${r},${g},${b},0.5)`;
@@ -2911,7 +2967,7 @@ function renderWeekStrip() {
 
     // 이날 이벤트
     const evs = [
-      ...(appData.mineEvents||[]).filter(e=>e.startDate<=ds&&e.endDate>=ds).map(e=>({...e,color:e.color||'#A07850'})),
+      ...(appData.mineEvents||[]).filter(e=>e.startDate<=ds&&e.endDate>=ds).map(e=>({...e,color:e.color||'#6B8E7A'})),
       ...(appData.bfEvents||[]).filter(e=>e.startDate<=ds&&e.endDate>=ds).map(e=>({...e,color:e.color||'#C0527A'})),
       ...(appData.togetherEvents||[]).filter(e=>e.startDate<=ds&&e.endDate>=ds).map(e=>({...e,color:e.color||'#8E7CC3'})),
       ...(appData.experiences||[]).filter(e=>e.visitDate===ds).map(e=>({title:'📍'+e.name,color:e.color||'#7A9E8E'})),
@@ -2936,7 +2992,7 @@ function renderWeekStrip() {
     const isToday = ds===todayStr;
     const allEvs = [
       ...(appData.mineEvents||[]).filter(e=>e.startDate<=ds&&e.endDate>=ds).map(e=>({
-        title:e.title, color:e.color||'#A07850', meta:'😶 나의 일정'
+        title:e.title, color:e.color||'#6B8E7A', meta:'😶 나의 일정'
       })),
       ...(appData.bfEvents||[]).filter(e=>e.startDate<=ds&&e.endDate>=ds).map(e=>({
         title:e.title, color:e.color||'#C0527A', meta:'🐍 남친 일정'
@@ -3005,7 +3061,7 @@ function renderHomeExp() {
 
   el.innerHTML = list.length ? list.map(e=>`
     <div class="ev-item" style="cursor:pointer;" onclick="switchTab('experience')">
-      <div class="ev-dot" style="background:${e.color||'#A07850'}"></div>
+      <div class="ev-dot" style="background:${e.color||'#6B8E7A'}"></div>
       <div class="ev-info">
         <div class="ev-title">${e.name} <span style="font-size:11px;color:var(--ink-soft);">${e.platform||''}</span></div>
         <div class="ev-date">마감 ${fmtDate(e.deadlineDate||e.endDate)} · ${e.status}</div>
