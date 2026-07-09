@@ -73,10 +73,13 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body {
   font-family:'Noto Sans KR',sans-serif;
-  background:
+  background-image:
+    radial-gradient(rgba(160,120,80,.07) 1px, transparent 1.3px),
     radial-gradient(900px 400px at 90% -5%, rgba(160,120,80,.07), transparent 60%),
-    radial-gradient(700px 400px at -5% 105%, rgba(192,118,106,.06), transparent 55%),
-    var(--paper);
+    radial-gradient(700px 400px at -5% 105%, rgba(192,118,106,.06), transparent 55%);
+  background-size: 22px 22px, auto, auto;
+  background-repeat: repeat, no-repeat, no-repeat;
+  background-color: var(--paper);
   color:var(--ink);min-height:100vh;
   -webkit-font-smoothing:antialiased;
 }
@@ -156,6 +159,17 @@ body {
 .hero-dow { color:var(--accent); font-weight:700; }
 .hero-sub { font-size:13px; color:var(--ink-soft); margin-top:6px; font-weight:400; }
 .hero-right { display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
+.hero-illust { line-height:0; opacity:.9; }
+.hero-chip {
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(160,120,80,.08); border:1px solid rgba(160,120,80,.16);
+  border-radius:999px; padding:5px 12px; font-size:12px; font-weight:700;
+  color:var(--accent); white-space:nowrap;
+}
+.card-deco { position:absolute; top:10px; right:14px; opacity:.5; line-height:0; pointer-events:none; }
+.empty-state { text-align:center; padding:22px 10px; color:var(--ink-soft); }
+.empty-state svg { display:block; margin:0 auto 8px; opacity:.7; }
+.empty-state p { font-size:13px; }
 .love-card {
   background:linear-gradient(135deg, rgba(192,82,122,.1), rgba(192,82,122,.05));
   border:1px solid rgba(192,82,122,.2); border-radius:14px;
@@ -476,7 +490,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
 .exp-table-wrap td:first-child { background:var(--paper2); }
 .exp-day-cell { border-right:1px solid rgba(0,0,0,.04); background:#fff; }
 .exp-day-cell.today { background:rgba(160,120,80,.06); }
-.exp-bar { position:absolute; top:50%; margin-top:-12px; height:24px; border-radius:6px; color:#fff; font-size:11px; font-weight:700; padding:4px 8px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; box-shadow:0 2px 6px rgba(0,0,0,.12); cursor:pointer; z-index:1; }
+.exp-bar { position:absolute; top:50%; margin-top:-12px; height:24px; border-radius:6px; font-size:11px; font-weight:700; padding:4px 8px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; box-shadow:0 1px 3px rgba(0,0,0,.06); cursor:pointer; z-index:1; }
 .exp-visit-marker { position:absolute; top:50%; margin-top:-16px; width:7px; height:32px; border-radius:4px; background:#4a9e7a; z-index:2; }
 .exp-deadline-marker { position:absolute; top:50%; margin-top:-16px; width:7px; height:32px; border-radius:4px; background:var(--rose); z-index:2; }
 .exp-help { background:rgba(160,120,80,.06); border-radius:10px; padding:10px 14px; color:var(--ink-soft); font-size:12px; margin-top:12px; line-height:1.6; }
@@ -739,6 +753,8 @@ tr:hover td { background:rgba(160,120,80,.04); }
 }
 .diary-textarea:focus { outline:none; border-color:var(--accent); }
 .diary-textarea::placeholder { color:var(--line2); }
+.diary-textarea[readonly] { background:rgba(160,120,80,.04); color:var(--ink); cursor:default; }
+.diary-emoji-btn:disabled { opacity:.45; cursor:default; }
 .diary-popup-acts { display:flex; gap:8px; }
 .diary-popup-acts button { flex:1; font-family:inherit; font-weight:700; font-size:13.5px; border-radius:10px; padding:10px; cursor:pointer; border:1px solid var(--line2); background:#fff; color:var(--ink); transition:.15s; }
 .diary-popup-acts .save { background:var(--accent); color:#fff; border-color:var(--accent); }
@@ -886,6 +902,22 @@ tr:hover td { background:rgba(160,120,80,.04); }
         </div>
         <div class="hero-sub" id="hero-sub">오늘도 잘 해낼 수 있어 🌿</div>
 
+      </div>
+      <div class="hero-right">
+        <div class="hero-illust" aria-hidden="true">
+          <svg width="64" height="48" viewBox="0 0 64 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="11" r="8" fill="#F0C77E" opacity="0.85"/>
+            <ellipse cx="26" cy="30" rx="20" ry="12" fill="#F3EAE0"/>
+            <ellipse cx="12" cy="27" rx="10" ry="9" fill="#F3EAE0"/>
+            <ellipse cx="40" cy="25" rx="12" ry="10" fill="#F3EAE0"/>
+            <circle cx="6" cy="12" r="2" fill="#C0527A" opacity="0.55"/>
+            <circle cx="15" cy="5" r="1.5" fill="#8E7CC3" opacity="0.6"/>
+            <circle cx="22" cy="10" r="1" fill="#7A9E8E" opacity="0.6"/>
+          </svg>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+          <span class="hero-chip" id="hero-today-chip">오늘 정보 불러오는 중...</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1037,7 +1069,16 @@ tr:hover td { background:rgba(160,120,80,.04); }
 
   <!-- ══ 시간표 탭 ══ -->
   <div class="tab-content" id="tab-timetable">
-    <div class="card">
+    <div class="card" style="position:relative;overflow:hidden;">
+      <div class="card-deco">
+        <svg width="52" height="40" viewBox="0 0 52 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="22" cy="24" rx="16" ry="10" fill="#F3EAE0"/>
+          <ellipse cx="10" cy="21" rx="8" ry="7" fill="#F3EAE0"/>
+          <ellipse cx="34" cy="20" rx="10" ry="8" fill="#F3EAE0"/>
+          <circle cx="6" cy="8" r="1.6" fill="#7A9E8E" opacity="0.55"/>
+          <circle cx="14" cy="4" r="1.2" fill="#A07850" opacity="0.6"/>
+        </svg>
+      </div>
       <div class="card-title" id="tt-form-title">🕐 학년/학기별 시간표 등록</div>
       <div class="form-row" style="margin-bottom:8px;">
         <input type="hidden" id="tt-edit-id">
@@ -1098,10 +1139,20 @@ tr:hover td { background:rgba(160,120,80,.04); }
 
   <!-- ══ 과제/시험 탭 ══ -->
   <div class="tab-content" id="tab-tasks">
-    <div class="card">
+    <div class="card" style="position:relative;overflow:hidden;">
+      <div class="card-deco">
+        <svg width="52" height="40" viewBox="0 0 52 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="22" cy="24" rx="16" ry="10" fill="#F3EAE0"/>
+          <ellipse cx="10" cy="21" rx="8" ry="7" fill="#F3EAE0"/>
+          <ellipse cx="34" cy="20" rx="10" ry="8" fill="#F3EAE0"/>
+          <circle cx="6" cy="8" r="1.6" fill="#A07850" opacity="0.55"/>
+          <circle cx="14" cy="4" r="1.2" fill="#C0766A" opacity="0.6"/>
+        </svg>
+      </div>
       <div class="card-title">📚 과제/시험 등록</div>
       <div class="form-row">
         <select id="task-type">
+          <option value="강의">📖 강의</option>
           <option value="과제">📝 과제</option>
           <option value="시험">📋 시험</option>
           <option value="퀴즈">❓ 퀴즈</option>
@@ -1136,7 +1187,7 @@ tr:hover td { background:rgba(160,120,80,.04); }
         <button class="btn btn-sm btn-outline" onclick="clearTaskSelection()">선택 취소</button>
       </div>
       <div class="table-scroll"><table>
-        <thead><tr><th style="width:34px;"><input type="checkbox" id="task-select-all" onchange="toggleTaskSelectAll(this.checked)"></th><th>종류</th><th>내용</th><th>주차</th><th>마감</th><th>D-day</th><th>우선순위</th></tr></thead>
+        <thead><tr><th style="width:34px;"><input type="checkbox" id="task-select-all" onchange="toggleTaskSelectAll(this.checked)"></th><th>종류</th><th>내용</th><th>주차</th><th>마감</th><th>D-day</th><th>우선순위</th><th>강의</th><th>과제</th></tr></thead>
         <tbody id="task-tbody"></tbody>
       </table></div>
       <div id="task-hidden-note" style="font-size:12px;color:var(--ink-soft);margin-top:6px;"></div>
@@ -1532,7 +1583,8 @@ tr:hover td { background:rgba(160,120,80,.04); }
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
               <div id="diary-write-date" style="font-family:'Nanum Myeongjo',serif;font-size:20px;font-weight:800;color:var(--ink);"></div>
               <div style="display:flex;gap:6px;">
-                <button class="btn" onclick="saveDiary()">저장</button>
+                <button class="btn" id="diary-edit-btn" onclick="enableDiaryEdit()" style="display:none;">✏️ 수정</button>
+                <button class="btn" id="diary-save-btn" onclick="saveDiary()">저장</button>
                 <button id="diary-del-btn" class="btn btn-danger" onclick="deleteDiary()" style="display:none;">삭제</button>
               </div>
             </div>
@@ -1637,6 +1689,11 @@ function normalizeAppData() {
   if(!appData.savingGoals || typeof appData.savingGoals !== 'object' || Array.isArray(appData.savingGoals)) appData.savingGoals = {};
   if(!appData.diaries || typeof appData.diaries !== 'object' || Array.isArray(appData.diaries)) appData.diaries = {};
   if(appData.diaryPin === undefined) appData.diaryPin = null;
+  // 예전 데이터(강의/과제 체크 필드 없음) 보정: 완료였던 건 둘 다 체크된 것으로 간주
+  appData.tasks.forEach(t=>{
+    if(t.lectureDone === undefined) t.lectureDone = !!t.done;
+    if(t.assignmentDone === undefined) t.assignmentDone = !!t.done;
+  });
 }
 
 function isMeaningfulData(data) {
@@ -1681,6 +1738,23 @@ function initHero() {
   const h = now.getHours();
   const greetings = h < 6 ? '밤도 열심히네요 🌙' : h < 12 ? '좋은 아침이에요 ☀️' : h < 18 ? '오늘도 화이팅 🌿' : '수고했어요 오늘도 💫';
   document.getElementById('hero-sub').innerText = greetings;
+
+  updateHeroTodaySummary();
+}
+
+// 오늘 일정/할일 요약 칩
+function updateHeroTodaySummary() {
+  const el = document.getElementById('hero-today-chip');
+  if(!el) return;
+  const now = new Date();
+  const ds = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  const evCount = [
+    ...(appData.mineEvents||[]),
+    ...(appData.bfEvents||[]),
+    ...(appData.togetherEvents||[]),
+  ].filter(e=>e.startDate<=ds && e.endDate>=ds).length;
+  const taskCount = (appData.tasks||[]).filter(t=>!t.done && t.date===ds).length;
+  el.innerText = `📌 오늘 일정 ${evCount}개 · 할일 ${taskCount}개`;
 }
 
 // ── 할 일 ──
@@ -1740,6 +1814,8 @@ function addTask() {
       priority, color,
       week: baseWeek !== null ? baseWeek + i : null,
       done: false,
+      lectureDone: false,
+      assignmentDone: false,
       isRepeat: i > 0
     });
   }
@@ -1962,6 +2038,13 @@ function toggleEvCard(type) {
 }
 function moveMonth(d) { calMonth += d; if(calMonth>11){calMonth=0;calYear++;} if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); }
 function goToday() { const n = new Date(); calYear = n.getFullYear(); calMonth = n.getMonth(); renderCalendar(); }
+
+const EMPTY_ILLUST = `<svg width="40" height="32" viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto 6px;opacity:.6;">
+  <ellipse cx="20" cy="20" rx="14" ry="8" fill="#F3EAE0"/>
+  <ellipse cx="10" cy="18" rx="6" ry="5" fill="#F3EAE0"/>
+  <ellipse cx="30" cy="17" rx="7" ry="6" fill="#F3EAE0"/>
+  <circle cx="20" cy="9" r="2" fill="#C0527A" opacity="0.5"/>
+</svg>`;
 
 function fmtDate(s) {
   if(!s) return '';
@@ -2267,6 +2350,8 @@ function renderGrades() {
 }
 
 function renderAll() {
+  updateHeroTodaySummary();
+
   // 투두
   document.getElementById('todo-list').innerHTML = appData.todos.length ?
     appData.todos.map(t=>`<div class="todo-item">
@@ -2274,7 +2359,7 @@ function renderAll() {
       <span class="todo-text${t.done?' done':''}">${t.text}</span>
       <button class="todo-del" onclick="deleteTodo(${t.id})">×</button>
     </div>`).join('') :
-    '<p style="color:var(--ink-soft);font-size:13px;padding:8px 0;">등록된 할 일이 없어요 🌿</p>';
+    `<div class="empty-state">${EMPTY_ILLUST}<p>등록된 할 일이 없어요 🌿</p></div>`;
 
   // 메모
   document.getElementById('memo-list').innerHTML = appData.memos.length ?
@@ -2283,7 +2368,7 @@ function renderAll() {
       <div class="memo-text">${m.text}</div>
       <button class="memo-del" onclick="deleteMemo(${m.id})">×</button>
     </div>`).join('') :
-    '<p style="color:var(--ink-soft);font-size:13px;padding:8px 0;">메모가 없어요</p>';
+    `<div class="empty-state">${EMPTY_ILLUST}<p>메모가 없어요</p></div>`;
 
   // 과제/시험 테이블
   renderTaskTable();
@@ -2498,9 +2583,9 @@ function renderExp() {
   dates.forEach(d=>{
     const sun=d.getDay()===0, sat=d.getDay()===6, first=d.getDate()===1;
     const isToday=d.getTime()===todayOnly.getTime();
-    const bg=isToday?'background:#A07850;color:#fff;':first?'background:rgba(160,120,80,.12);':'';
+    const bg=isToday?'background:#A07850;color:#fff;padding-left:0;padding-right:0;':first?'background:rgba(160,120,80,.12);':'';
     const fc=isToday?'':sun?'color:#C0527A;':sat?'color:#3A6EA5;':'';
-    const todayMark=isToday?'<br><span style="font-size:9px;font-weight:800;">TODAY</span>':'';
+    const todayMark=isToday?'<br><span style="font-size:7px;font-weight:800;letter-spacing:-0.4px;white-space:nowrap;">TODAY</span>':'';
     header+=`<div style="${bg}${fc}">${first&&!isToday?(d.getMonth()+1)+'/':''}${d.getDate()}${todayMark}<br><span style="font-weight:400">${isToday?'':dayNames[d.getDay()]}</span></div>`;
   });
   header+='</div>';
@@ -2554,7 +2639,11 @@ function renderExp() {
     bar.className='exp-bar';
     bar.style.left=(nameW+si*colW+4)+'px';
     bar.style.width=((ei-si+1)*colW-8)+'px';
-    bar.style.background=e.color||'#A07850';
+    const barColor = e.color||'#A07850';
+    const {r,g,b} = hexToRgb(barColor);
+    bar.style.background = `rgba(${r},${g},${b},0.18)`;
+    bar.style.border = `1.5px solid rgba(${r},${g},${b},0.5)`;
+    bar.style.color = barColor;
     bar.innerText=`${formatShortDate(e.startDate)} ~ ${formatShortDate(e.endDate)}`;
     bar.onclick=()=>editExperience(e.id);
     row.appendChild(bar);
@@ -2580,7 +2669,7 @@ function renderExp() {
       <td>${e.reward||'-'}</td><td>${e.region||'-'}</td><td>${e.memo||'-'}</td>
       <td><button class="btn btn-sm btn-outline" onclick="editExperience(${e.id})">수정</button> <button class="btn btn-sm btn-danger" onclick="deleteExperience(${e.id})">삭제</button></td>
     </tr>`;
-  }).join('')||`<tr><td colspan="11" style="text-align:center;color:var(--ink-soft);padding:14px;">등록된 체험단이 없어요</td></tr>`;
+  }).join('')||`<tr><td colspan="11" style="text-align:center;padding:20px;"><div class="empty-state">${EMPTY_ILLUST}<p>등록된 체험단이 없어요</p></div></td></tr>`;
 
   document.getElementById('exp-count-all').innerText=appData.experiences.length;
   document.getElementById('exp-count-before').innerText=appData.experiences.filter(e=>['방문 전','예약 완료'].includes(e.status)).length;
@@ -2923,7 +3012,7 @@ function renderHomeExp() {
       </div>
       ${e.dd.text.startsWith('D+') ? '' : `<span class="dday-chip ${e.dd.cls}" style="font-size:11px;padding:3px 7px;">${e.dd.text}</span>`}
     </div>`).join('') :
-    '<p style="color:var(--ink-soft);font-size:13px;padding:8px 0;">진행 중인 체험단이 없어요</p>';
+    `<div class="empty-state">${EMPTY_ILLUST}<p>진행 중인 체험단이 없어요</p></div>`;
 }
 
 // ── 수입 예정 ──
@@ -3343,20 +3432,44 @@ function openDiaryPopup(dateStr) {
   document.getElementById('diary-empty-state').style.display = 'none';
   document.getElementById('diary-write-area').style.display = 'block';
   document.getElementById('diary-write-date').innerText = dateLabel;
-  document.getElementById('diary-text').value = diary ? diary.text : '';
+  const textarea = document.getElementById('diary-text');
+  textarea.value = diary ? diary.text : '';
   currentDiaryEmoji = diary ? (diary.emoji||'😊') : '😊';
 
   document.querySelectorAll('.diary-emoji-btn').forEach(btn => {
     btn.classList.toggle('selected', btn.innerText===currentDiaryEmoji);
   });
   document.getElementById('diary-del-btn').style.display = diary ? 'inline-block' : 'none';
-  setTimeout(()=>document.getElementById('diary-text').focus(), 100);
+
+  if(diary) {
+    // 이미 쓴 일기가 있으면 실수로 고쳐 쓰지 않도록 읽기 전용으로 먼저 보여줌
+    textarea.readOnly = true;
+    document.getElementById('diary-save-btn').style.display = 'none';
+    document.getElementById('diary-edit-btn').style.display = 'inline-block';
+    document.querySelectorAll('.diary-emoji-btn').forEach(btn => { btn.disabled = true; });
+  } else {
+    // 새로 쓰는 일기는 바로 작성 가능
+    textarea.readOnly = false;
+    document.getElementById('diary-save-btn').style.display = 'inline-block';
+    document.getElementById('diary-edit-btn').style.display = 'none';
+    document.querySelectorAll('.diary-emoji-btn').forEach(btn => { btn.disabled = false; });
+    setTimeout(()=>textarea.focus(), 100);
+  }
 
   // 선택된 날짜 달력에서 강조
   document.querySelectorAll('.diary-cal-cell').forEach(el => el.style.outline='');
   document.querySelectorAll('.diary-cal-cell').forEach(el => {
     if(el.dataset.date===dateStr) el.style.outline='2px solid var(--accent)';
   });
+}
+
+function enableDiaryEdit() {
+  const textarea = document.getElementById('diary-text');
+  textarea.readOnly = false;
+  document.getElementById('diary-edit-btn').style.display = 'none';
+  document.getElementById('diary-save-btn').style.display = 'inline-block';
+  document.querySelectorAll('.diary-emoji-btn').forEach(btn => { btn.disabled = false; });
+  textarea.focus();
 }
 
 function closeDiaryPopup() {
@@ -3384,11 +3497,16 @@ function saveDiary() {
   // 달력만 다시 렌더
   renderDiaryCal();
   showToast('일기가 저장됐어요 📔', '✅');
-  // 저장 후 패널 상태 유지
+  // 저장 후 패널 상태 유지 + 다시 읽기 전용으로 전환 (실수로 또 고치는 것 방지)
   document.getElementById('diary-empty-state').style.display = 'none';
   document.getElementById('diary-write-area').style.display = 'block';
   const delBtn = document.getElementById('diary-del-btn');
   if(delBtn) delBtn.style.display = 'inline-block';
+  const textarea = document.getElementById('diary-text');
+  textarea.readOnly = true;
+  document.getElementById('diary-save-btn').style.display = 'none';
+  document.getElementById('diary-edit-btn').style.display = 'inline-block';
+  document.querySelectorAll('.diary-emoji-btn').forEach(btn => { btn.disabled = true; });
 }
 
 function deleteDiary() {
@@ -3417,6 +3535,14 @@ function changePinPrompt() {
 let taskFilter = 'all';
 let taskShowAll = false;
 let selectedTaskIds = new Set();
+function toggleTaskSubDone(id, kind, checked) {
+  const t = appData.tasks.find(x=>x.id===id);
+  if(!t) return;
+  if(kind==='lecture') t.lectureDone = checked;
+  else t.assignmentDone = checked;
+  t.done = !!t.lectureDone && !!t.assignmentDone;
+  saveAndRender();
+}
 function toggleTaskShowAll() {
   taskShowAll = !taskShowAll;
   const btn = document.getElementById('task-showall-btn');
@@ -3460,7 +3586,7 @@ function updateTaskBulkBar() {
 }
 function bulkCompleteTasks() {
   if(!selectedTaskIds.size) return;
-  appData.tasks.forEach(t=>{ if(selectedTaskIds.has(t.id)) t.done = true; });
+  appData.tasks.forEach(t=>{ if(selectedTaskIds.has(t.id)){ t.done = true; t.lectureDone = true; t.assignmentDone = true; } });
   selectedTaskIds.clear();
   saveAndRender();
   showToast('선택한 과제를 완료 처리했어요! ✓', '📝');
@@ -3509,9 +3635,11 @@ function renderTaskTable() {
         <td>${t.date}</td>
         <td><span class="dday-chip ${dd.cls}">${dd.text}</span></td>
         <td><span class="priority ${t.priority}">${t.priority==='high'?'높음':t.priority==='mid'?'중간':'낮음'}</span></td>
+        <td style="text-align:center;"><input type="checkbox" title="강의 들음" ${t.lectureDone?'checked':''} onchange="toggleTaskSubDone(${t.id},'lecture',this.checked)"></td>
+        <td style="text-align:center;"><input type="checkbox" title="과제 함" ${t.assignmentDone?'checked':''} onchange="toggleTaskSubDone(${t.id},'assignment',this.checked)"></td>
       </tr>`;
     }).join('') :
-    '<tr><td colspan="7" style="text-align:center;color:var(--ink-soft);padding:16px;">해당 항목이 없어요</td></tr>';
+    `<tr><td colspan="9" style="text-align:center;padding:20px;"><div class="empty-state">${EMPTY_ILLUST}<p>해당 항목이 없어요</p></div></td></tr>`;
   updateTaskBulkBar();
 }
 
