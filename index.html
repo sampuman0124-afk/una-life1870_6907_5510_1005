@@ -473,7 +473,7 @@ tr:hover td { background:rgba(125,118,153,.04); }
 .exp-gantt-header, .exp-gantt-row { display:grid; align-items:stretch; }
 .exp-gantt-header > div { background:rgba(125,118,153,.07); border-right:1px solid var(--line); border-bottom:1px solid var(--line2); padding:6px 3px; text-align:center; font-size:11px; font-weight:700; color:var(--ink-soft); }
 .exp-gantt-row { min-height:44px; position:relative; border-bottom:1px solid var(--line); align-items:center; }
-.exp-gantt-name { padding:8px; border-right:1px solid var(--line); font-weight:700; font-size:12px; display:flex; gap:5px; align-items:center; background:#fff; position:sticky; left:0; z-index:5; min-width:220px; box-shadow:2px 0 4px rgba(0,0,0,.05); }
+.exp-gantt-name { padding:8px; border-right:1px solid var(--line); font-weight:700; font-size:12px; display:flex; gap:5px; align-items:center; background:#fff; position:sticky; left:0; z-index:5; min-width:220px; }
 .exp-dot { width:9px; height:9px; border-radius:50%; display:inline-block; flex-shrink:0; }
 .exp-name-text { white-space:normal; word-break:keep-all; line-height:1.3; }
 
@@ -482,11 +482,10 @@ tr:hover td { background:rgba(125,118,153,.04); }
 .exp-table-wrap table { min-width:900px; }
 .exp-table-wrap th:first-child, .exp-table-wrap td:first-child {
   position:sticky; left:0; z-index:2;
-  box-shadow:2px 0 4px rgba(0,0,0,.05);
   white-space:normal; word-break:keep-all;
   min-width:150px;
 }
-.exp-table-wrap th:first-child { background:#F3EAE0; z-index:3; }
+.exp-table-wrap th:first-child { background:rgba(125,118,153,.07); z-index:3; }
 .exp-table-wrap td:first-child { background:var(--paper2); }
 .exp-day-cell { border-right:1px solid rgba(0,0,0,.04); background:#fff; }
 .exp-day-cell.today { background:rgba(125,118,153,.06); }
@@ -782,7 +781,9 @@ tr:hover td { background:rgba(125,118,153,.04); }
   .stat-grid{grid-template-columns:repeat(2,1fr)}
   .hero{padding:16px}
   .hero-top{flex-direction:column;align-items:flex-start}
-  .hero-right{align-self:flex-start}
+  .hero-right{align-self:stretch;align-items:flex-start;width:100%;}
+  .hero-illust{align-self:flex-end;}
+  #hero-fortune-chip, #hero-today-chip{ white-space:normal; width:100%; box-sizing:border-box; text-align:left; }
 
   /* 폼 입력들 - iOS 자동확대 방지 + 탭하기 쉽게 */
   .form-row input, .form-row select,
@@ -973,6 +974,8 @@ tr:hover td { background:rgba(125,118,153,.04); }
           <button onclick="addTodo()">추가</button>
         </div>
         <div id="todo-list"><p style="color:var(--ink-soft);font-size:13px;padding:8px 0;">등록된 할 일이 없어요 🌿</p></div>
+        <div id="todo-done-toggle" onclick="toggleTodoShowDone()" style="display:none;font-size:12px;color:var(--ink-soft);cursor:pointer;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);"></div>
+        <div id="todo-done-list" style="display:none;margin-top:4px;"></div>
       </div>
 
       <!-- 메모장 -->
@@ -1377,11 +1380,11 @@ tr:hover td { background:rgba(125,118,153,.04); }
         </div>
         <div style="display:flex;align-items:center;gap:6px;">
           <span style="font-size:11px;color:var(--ink-soft);">매달 나가는 고정 비용</span>
-          <span id="fixed-toggle-icon" style="font-size:13px;color:var(--ink-soft);">▲</span>
+          <span id="fixed-toggle-icon" style="font-size:13px;color:var(--ink-soft);">▼</span>
         </div>
       </div>
       <!-- 접히는 내용 -->
-      <div id="fixed-body" style="margin-top:10px;">
+      <div id="fixed-body" style="margin-top:10px;display:none;">
         <div class="form-row" style="margin-bottom:8px;">
           <input type="hidden" id="fixed-edit-id">
           <input type="text" id="fixed-name" placeholder="항목명 (예: 관리비)" style="flex:1;min-width:100px;">
@@ -1641,6 +1644,17 @@ tr:hover td { background:rgba(125,118,153,.04); }
     <h3 id="cal-popup-date">📅 일정 추가</h3>
     <input type="hidden" id="pop-edit-id">
     <input type="hidden" id="pop-edit-type">
+    <input type="hidden" id="pop-cal-date">
+    <div class="popup-field" id="pop-period-field" style="padding:2px 0 0;">
+      <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;color:var(--ink-soft);margin:0;">
+        <input type="checkbox" id="pop-period-toggle" onchange="togglePeriodDate()" style="width:16px;height:16px;cursor:pointer;">
+        🍒 이 날짜 표시
+      </label>
+      <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;color:var(--ink-soft);margin:6px 0 0;">
+        <input type="checkbox" id="pop-love-toggle" onchange="toggleLoveDate()" style="width:16px;height:16px;cursor:pointer;">
+        ღ 이 날짜 표시
+      </label>
+    </div>
     <div class="type-row" id="pop-type-row">
       <button class="type-btn active-mine" id="pop-type-mine" onclick="selectPopType('mine')">😶 나의 일정</button>
       <button class="type-btn" id="pop-type-bf" onclick="selectPopType('bf')">🐍 남친 일정</button>
@@ -1681,7 +1695,7 @@ tr:hover td { background:rgba(125,118,153,.04); }
 // ── 데이터 ──
 let appData = {
   todos:[], memos:[], tasks:[], grades:[], timetables:[],
-  mineEvents:[], bfEvents:[], togetherEvents:[], experiences:[], moneyRecords:[], fixedExpenses:[], incomePlans:[], savingGoals:{}, piggyBank:[], diaries:{}, diaryPin:null
+  mineEvents:[], bfEvents:[], togetherEvents:[], periodDates:[], loveDates:[], experiences:[], moneyRecords:[], fixedExpenses:[], incomePlans:[], savingGoals:{}, piggyBank:[], diaries:{}, diaryPin:null
 };
 
 // 초기 불러오기 완료 전에는 Firebase 저장을 차단한다.
@@ -1689,7 +1703,7 @@ let appData = {
 let dataLoaded = false;
 
 function normalizeAppData() {
-  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','togetherEvents','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank'];
+  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','togetherEvents','periodDates','loveDates','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank'];
   arrayKeys.forEach(k => { if(!Array.isArray(appData[k])) appData[k] = []; });
   if(!appData.savingGoals || typeof appData.savingGoals !== 'object' || Array.isArray(appData.savingGoals)) appData.savingGoals = {};
   if(!appData.diaries || typeof appData.diaries !== 'object' || Array.isArray(appData.diaries)) appData.diaries = {};
@@ -1703,7 +1717,7 @@ function normalizeAppData() {
 
 function isMeaningfulData(data) {
   if(!data || typeof data !== 'object') return false;
-  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','togetherEvents','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank'];
+  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','togetherEvents','periodDates','loveDates','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank'];
   const hasArrayData = arrayKeys.some(k => Array.isArray(data[k]) && data[k].length > 0);
   const hasDiaryData = data.diaries && typeof data.diaries === 'object' && !Array.isArray(data.diaries) && Object.keys(data.diaries).length > 0;
   const hasSettings = !!data.diaryPin || !!data.currentSemester || (data.savingGoals && typeof data.savingGoals === 'object' && Object.keys(data.savingGoals).length > 0);
@@ -1808,17 +1822,22 @@ function updateHeroTodaySummary() {
 }
 
 // ── 할 일 ──
+let todoShowDone = false;
+function toggleTodoShowDone() {
+  todoShowDone = !todoShowDone;
+  renderAll();
+}
 function addTodo() {
   const input = document.getElementById('todo-input');
   const text = input.value.trim();
   if(!text) return;
-  appData.todos.push({ id: Date.now(), text, done: false });
+  appData.todos.push({ id: Date.now(), text, done: false, completedAt: null });
   input.value = '';
   saveAndRender();
 }
 function toggleTodo(id) {
   const t = appData.todos.find(x => x.id === id);
-  if(t) t.done = !t.done;
+  if(t) { t.done = !t.done; t.completedAt = t.done ? Date.now() : null; }
   saveAndRender();
 }
 function deleteTodo(id) {
@@ -1997,8 +2016,36 @@ function openCalPopup(dateStr) {
   const pr = document.getElementById('pop-repeat'); if(pr) pr.value = 'none';
   const sb = document.getElementById('pop-save-btn'); if(sb) sb.innerText = '등록';
   const db = document.getElementById('pop-delete-btn'); if(db) db.style.display = 'none';
+  const pf = document.getElementById('pop-period-field'); if(pf) pf.style.display = 'block';
+  document.getElementById('pop-cal-date').value = dateStr;
+  document.getElementById('pop-period-toggle').checked = (appData.periodDates||[]).includes(dateStr);
+  document.getElementById('pop-love-toggle').checked = (appData.loveDates||[]).includes(dateStr);
   document.getElementById('cal-popup-bg').classList.add('open');
   setTimeout(()=>{ const t=document.getElementById('pop-title'); if(t) t.focus(); }, 150);
+}
+function togglePeriodDate() {
+  const dateStr = document.getElementById('pop-cal-date').value;
+  if(!dateStr) return;
+  if(!appData.periodDates) appData.periodDates = [];
+  const checked = document.getElementById('pop-period-toggle').checked;
+  if(checked) {
+    if(!appData.periodDates.includes(dateStr)) appData.periodDates.push(dateStr);
+  } else {
+    appData.periodDates = appData.periodDates.filter(d=>d!==dateStr);
+  }
+  saveAndRender();
+}
+function toggleLoveDate() {
+  const dateStr = document.getElementById('pop-cal-date').value;
+  if(!dateStr) return;
+  if(!appData.loveDates) appData.loveDates = [];
+  const checked = document.getElementById('pop-love-toggle').checked;
+  if(checked) {
+    if(!appData.loveDates.includes(dateStr)) appData.loveDates.push(dateStr);
+  } else {
+    appData.loveDates = appData.loveDates.filter(d=>d!==dateStr);
+  }
+  saveAndRender();
 }
 function closePopup() {
   document.getElementById('cal-popup-bg').classList.remove('open');
@@ -2068,6 +2115,7 @@ function editEvent(id, type) {
   selectPopType(type);
   document.getElementById('pop-color').value = ev.color || '#7D7699';
   const rf = document.getElementById('pop-repeat-field'); if(rf) rf.style.display = 'none';
+  const pf = document.getElementById('pop-period-field'); if(pf) pf.style.display = 'none';
   const sb = document.getElementById('pop-save-btn'); if(sb) sb.innerText = '수정 완료';
   const db = document.getElementById('pop-delete-btn'); if(db) db.style.display = 'block';
   document.getElementById('cal-popup-bg').classList.add('open');
@@ -2191,7 +2239,9 @@ function buildCalendarGrid(year, month) {
     let numColor = 'var(--ink-soft)';
     if(holidayName || dow===0) numColor = 'var(--love)';
     else if(dow===6) numColor = 'var(--saturday)';
-    let evHtml = `<div class="cal-num" style="color:${numColor};font-weight:${isToday?800:600};" ${holidayName?`title="${holidayName}"`:''}>${d}</div>`;
+    const isPeriod = (appData.periodDates||[]).includes(dateStr);
+    const isLove = (appData.loveDates||[]).includes(dateStr);
+    let evHtml = `<div class="cal-num" style="color:${numColor};font-weight:${isToday?800:600};" ${holidayName?`title="${holidayName}"`:''}>${d}${isPeriod?'<span style="font-size:8px;margin-left:2px;opacity:.75;">🍒</span>':''}${isLove?'<span style="font-size:8px;margin-left:2px;opacity:.75;">ღ</span>':''}</div>`;
     const daySlots = slots[dateStr]||[];
     const maxSlots = daySlots.length;
     for(let s=0;s<maxSlots;s++){
@@ -2412,14 +2462,31 @@ function renderGrades() {
 function renderAll() {
   updateHeroTodaySummary();
 
-  // 투두
-  document.getElementById('todo-list').innerHTML = appData.todos.length ?
-    appData.todos.map(t=>`<div class="todo-item">
-      <div class="todo-check${t.done?' done':''}" onclick="toggleTodo(${t.id})">${t.done?'✓':''}</div>
-      <span class="todo-text${t.done?' done':''}">${t.text}</span>
+  // 투두 (진행중은 최신순, 완료는 접어서 별도 보관)
+  const activeTodos = appData.todos.filter(t=>!t.done).sort((a,b)=>b.id-a.id);
+  const doneTodos = appData.todos.filter(t=>t.done).sort((a,b)=>(b.completedAt||b.id)-(a.completedAt||a.id));
+  document.getElementById('todo-list').innerHTML = activeTodos.length ?
+    activeTodos.map(t=>`<div class="todo-item">
+      <div class="todo-check" onclick="toggleTodo(${t.id})"></div>
+      <span class="todo-text">${t.text}</span>
       <button class="todo-del" onclick="deleteTodo(${t.id})">×</button>
     </div>`).join('') :
     `<div class="empty-state">${EMPTY_ILLUST}<p>등록된 할 일이 없어요 🌿</p></div>`;
+
+  const doneToggleEl = document.getElementById('todo-done-toggle');
+  const doneListEl = document.getElementById('todo-done-list');
+  if(doneToggleEl){
+    doneToggleEl.style.display = doneTodos.length ? 'block' : 'none';
+    doneToggleEl.innerText = todoShowDone ? `✓ 완료한 할 일 ${doneTodos.length}개 접기` : `✓ 완료한 할 일 ${doneTodos.length}개 보기`;
+  }
+  if(doneListEl){
+    doneListEl.style.display = (todoShowDone && doneTodos.length) ? 'block' : 'none';
+    doneListEl.innerHTML = doneTodos.map(t=>`<div class="todo-item" style="opacity:.6;">
+      <div class="todo-check done" onclick="toggleTodo(${t.id})">✓</div>
+      <span class="todo-text done">${t.text}</span>
+      <button class="todo-del" onclick="deleteTodo(${t.id})">×</button>
+    </div>`).join('');
+  }
 
   // 메모
   document.getElementById('memo-list').innerHTML = appData.memos.length ?
@@ -2761,7 +2828,7 @@ function renderExp() {
 
 
 // ── 고정지출 접기/펼치기 ──
-let fixedOpen = true;
+let fixedOpen = false;
 function toggleFixed() {
   fixedOpen = !fixedOpen;
   const body = document.getElementById('fixed-body');
