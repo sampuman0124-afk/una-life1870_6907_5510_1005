@@ -1498,6 +1498,25 @@ tr:hover td { background:rgba(125,118,153,.04); }
           <button class="btn btn-sm btn-danger" onclick="addPiggy('out')">❤️ 출금</button>
         </div>
       </div>
+      <!-- 나갈 예정 메모 -->
+      <div style="margin-top:12px;border-top:1px solid var(--line);padding-top:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="toggleSavingNotes()">
+          <span style="font-size:12.5px;font-weight:700;color:var(--ink-soft);">📝 나갈 예정 메모</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span id="saving-note-total-mini" style="font-size:11.5px;font-weight:700;color:var(--rose);background:rgba(192,118,106,.1);border-radius:999px;padding:2px 9px;"></span>
+            <span id="saving-note-toggle-icon" style="font-size:12px;color:var(--ink-soft);">▼</span>
+          </div>
+        </div>
+        <div id="saving-note-body" style="margin-top:8px;display:none;">
+          <div class="form-row" style="margin-bottom:8px;">
+            <input type="text" id="saving-note-memo" placeholder="예: 등록금, 여행 경비" style="flex:1;min-width:100px;">
+            <input type="number" id="saving-note-amount" placeholder="금액(선택)" min="0" style="width:110px;">
+            <span class="form-label">원</span>
+            <button class="btn btn-sm" onclick="addSavingNote()">추가</button>
+          </div>
+          <div id="saving-note-list"></div>
+        </div>
+      </div>
       <!-- 내역 (최근 5개) -->
       <div id="piggy-history" style="margin-top:10px;"></div>
     </div>
@@ -1695,7 +1714,7 @@ tr:hover td { background:rgba(125,118,153,.04); }
 // ── 데이터 ──
 let appData = {
   todos:[], memos:[], tasks:[], grades:[], timetables:[],
-  mineEvents:[], bfEvents:[], togetherEvents:[], periodDates:[], loveDates:[], experiences:[], moneyRecords:[], fixedExpenses:[], incomePlans:[], savingGoals:{}, piggyBank:[], diaries:{}, diaryPin:null
+  mineEvents:[], bfEvents:[], togetherEvents:[], periodDates:[], loveDates:[], experiences:[], moneyRecords:[], fixedExpenses:[], incomePlans:[], savingGoals:{}, savingNotes:[], piggyBank:[], diaries:{}, diaryPin:null
 };
 
 // 초기 불러오기 완료 전에는 Firebase 저장을 차단한다.
@@ -1703,7 +1722,7 @@ let appData = {
 let dataLoaded = false;
 
 function normalizeAppData() {
-  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','togetherEvents','periodDates','loveDates','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank'];
+  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','togetherEvents','periodDates','loveDates','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank','savingNotes'];
   arrayKeys.forEach(k => { if(!Array.isArray(appData[k])) appData[k] = []; });
   if(!appData.savingGoals || typeof appData.savingGoals !== 'object' || Array.isArray(appData.savingGoals)) appData.savingGoals = {};
   if(!appData.diaries || typeof appData.diaries !== 'object' || Array.isArray(appData.diaries)) appData.diaries = {};
@@ -1717,7 +1736,7 @@ function normalizeAppData() {
 
 function isMeaningfulData(data) {
   if(!data || typeof data !== 'object') return false;
-  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','togetherEvents','periodDates','loveDates','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank'];
+  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','togetherEvents','periodDates','loveDates','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank','savingNotes'];
   const hasArrayData = arrayKeys.some(k => Array.isArray(data[k]) && data[k].length > 0);
   const hasDiaryData = data.diaries && typeof data.diaries === 'object' && !Array.isArray(data.diaries) && Object.keys(data.diaries).length > 0;
   const hasSettings = !!data.diaryPin || !!data.currentSemester || (data.savingGoals && typeof data.savingGoals === 'object' && Object.keys(data.savingGoals).length > 0);
@@ -2992,6 +3011,7 @@ function formatMoney(n) {
   return n.toLocaleString('ko-KR') + '원';
 }
 function renderMoney() {
+  renderSavingNotes();
   const titleEl = document.getElementById('money-month-title');
   if(titleEl) titleEl.innerText = `${moneyYear}년 ${moneyMonth+1}월`;
 
@@ -3237,6 +3257,48 @@ function renderMoneyChart() {
 }
 
 // ── 목돈 모으기 ──
+let savingNoteOpen = false;
+function toggleSavingNotes() {
+  savingNoteOpen = !savingNoteOpen;
+  const body = document.getElementById('saving-note-body');
+  const icon = document.getElementById('saving-note-toggle-icon');
+  if(body) body.style.display = savingNoteOpen ? 'block' : 'none';
+  if(icon) icon.innerText = savingNoteOpen ? '▲' : '▼';
+  renderSavingNotes();
+}
+function addSavingNote() {
+  const memo = document.getElementById('saving-note-memo').value.trim();
+  if(!memo) return alert('메모 내용을 입력해주세요.');
+  const amountVal = document.getElementById('saving-note-amount').value;
+  const amount = amountVal ? parseInt(amountVal) : null;
+  if(!appData.savingNotes) appData.savingNotes = [];
+  appData.savingNotes.push({ id: Date.now(), memo, amount });
+  document.getElementById('saving-note-memo').value = '';
+  document.getElementById('saving-note-amount').value = '';
+  saveAndRender();
+}
+function deleteSavingNote(id) {
+  appData.savingNotes = (appData.savingNotes||[]).filter(x=>x.id!==id);
+  saveAndRender();
+}
+function renderSavingNotes() {
+  const notes = appData.savingNotes || [];
+  const total = notes.reduce((s,x)=>s+(x.amount||0), 0);
+  const listEl = document.getElementById('saving-note-list');
+  if(listEl){
+    listEl.innerHTML = notes.length ? notes.map(x=>`
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 2px;border-top:1px solid var(--line);font-size:12.5px;">
+        <span>${x.memo}</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          ${x.amount?`<span style="font-weight:700;color:var(--rose);">${x.amount.toLocaleString('ko-KR')}원</span>`:''}
+          <button onclick="deleteSavingNote(${x.id})" style="border:none;background:none;color:var(--ink-soft);opacity:.5;cursor:pointer;font-size:14px;">×</button>
+        </div>
+      </div>`).join('') :
+      `<p style="color:var(--ink-soft);font-size:12px;padding:4px 0;">나갈 예정인 메모를 추가해보세요</p>`;
+  }
+  const miniEl = document.getElementById('saving-note-total-mini');
+  if(miniEl) miniEl.innerText = (total > 0 && !savingNoteOpen) ? total.toLocaleString('ko-KR')+'원 예정' : (notes.length && !savingNoteOpen ? `${notes.length}개` : '');
+}
 const PIGGY_GOAL = 10000000;
 const PIGGY_DDAY = new Date(2028, 11, 20); // 2028-12-20
 
