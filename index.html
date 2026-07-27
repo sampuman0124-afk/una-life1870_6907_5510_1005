@@ -1426,10 +1426,9 @@ tr:hover td { background:rgba(125,118,153,.04); }
           <option value="식비">🍚 식비</option>
           <option value="교통">🚌 교통</option>
           <option value="쇼핑">🛍️ 쇼핑</option>
-          <option value="카페">☕ 카페</option>
           <option value="구독">📱 구독</option>
           <option value="의료">💊 의료</option>
-          <option value="기타">📌 기타</option>
+          <option value="고정지출">🏠 고정지출</option>
         </select>
         <span class="form-label">금액</span>
         <input type="number" id="money-amount" placeholder="0" min="0" style="width:110px;">
@@ -1523,13 +1522,27 @@ tr:hover td { background:rgba(125,118,153,.04); }
 
     <!-- 내역 테이블 -->
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
         <div class="card-title">📋 내역</div>
-        <select id="money-filter" onchange="renderMoney()" style="font-family:inherit;font-size:12px;padding:6px 8px;border:1px solid var(--line2);border-radius:7px;">
-          <option value="all">전체</option>
-          <option value="income">수입만</option>
-          <option value="expense">지출만</option>
-        </select>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <select id="money-cat-filter" onchange="renderMoney()" style="font-family:inherit;font-size:12px;padding:6px 8px;border:1px solid var(--line2);border-radius:7px;">
+            <option value="all">전체 카테고리</option>
+            <option value="알바비">💼 알바비</option>
+            <option value="원고료">✍️ 원고료</option>
+            <option value="용돈">🎁 용돈</option>
+            <option value="식비">🍚 식비</option>
+            <option value="교통">🚌 교통</option>
+            <option value="쇼핑">🛍️ 쇼핑</option>
+            <option value="구독">📱 구독</option>
+            <option value="의료">💊 의료</option>
+            <option value="고정지출">🏠 고정지출</option>
+          </select>
+          <select id="money-filter" onchange="renderMoney()" style="font-family:inherit;font-size:12px;padding:6px 8px;border:1px solid var(--line2);border-radius:7px;">
+            <option value="all">전체</option>
+            <option value="income">수입만</option>
+            <option value="expense">지출만</option>
+          </select>
+        </div>
       </div>
       <table>
         <thead><tr><th>날짜</th><th>항목</th><th>카테고리</th><th>금액</th><th>메모</th><th>관리</th></tr></thead>
@@ -2943,8 +2956,8 @@ function selectMoneyType(t) {
   document.getElementById('money-type-out').className = 'type-btn' + (t==='expense'?' active-bf':'');
   // 카테고리 옵션 필터
   const cat = document.getElementById('money-category');
-  const incomeOpts = ['알바비','원고료','용돈','기타'];
-  const expenseOpts = ['식비','교통','쇼핑','카페','구독','의료','기타'];
+  const incomeOpts = ['알바비','원고료','용돈','고정지출'];
+  const expenseOpts = ['식비','교통','쇼핑','구독','의료','고정지출'];
   const opts = t==='income' ? incomeOpts : expenseOpts;
   Array.from(cat.options).forEach(o => {
     o.style.display = opts.includes(o.value) ? '' : 'none';
@@ -3033,7 +3046,9 @@ function renderMoney() {
   }
   if(document.getElementById('money-bar')) document.getElementById('money-bar').style.width = ratio+'%';
 
+  const catFilter = document.getElementById('money-cat-filter')?.value || 'all';
   const filtered = records.filter(m=>filter==='all'||m.type===filter)
+    .filter(m=>catFilter==='all'||m.category===catFilter)
     .sort((a,b)=>b.date.localeCompare(a.date));
 
   const tbody = document.getElementById('money-tbody');
@@ -3050,7 +3065,7 @@ function renderMoney() {
         <button class="btn btn-sm btn-danger" onclick="deleteMoney(${m.id})">삭제</button>
       </td>
     </tr>`).join('') :
-    `<tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:16px;">이번 달 내역이 없어요 💰</td></tr>`;
+    `<tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:16px;">${catFilter!=='all'||filter!=='all'?'조건에 맞는 내역이 없어요':'이번 달 내역이 없어요'} 💰</td></tr>`;
 
   renderCategorySummary(records);
   renderIncomePlan();
@@ -3386,7 +3401,7 @@ function renderSavingGoal(balance) {
 // ── 카테고리별 지출 요약 ──
 const catColors = {
   '식비':'#e07a5f','교통':'#81b29a','쇼핑':'#f2cc8f',
-  '카페':'#c9a96e','구독':'#9b8ec4','의료':'#7ec8c8','기타':'#b0a090'
+  '구독':'#9b8ec4','의료':'#7ec8c8','고정지출':'#b0a090'
 };
 function renderCategorySummary(records) {
   const el = document.getElementById('category-summary');
