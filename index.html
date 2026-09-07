@@ -276,6 +276,8 @@ body {
   flex-shrink:0;
 }
 .swatch:hover { transform:scale(1.18); box-shadow:0 1px 4px rgba(0,0,0,.15); }
+.swatch-important { border:1.5px solid rgba(214,69,69,.5); box-shadow:0 0 0 2px rgba(214,69,69,.12); }
+.swatch-important:hover { box-shadow:0 0 0 2px rgba(214,69,69,.2), 0 1px 4px rgba(0,0,0,.15); }
 .form-row input, .form-row select {
   font-family:inherit; font-size:12.5px;
   border:1px solid var(--line2); background:#fff;
@@ -1149,7 +1151,7 @@ tr:hover td { background:rgba(125,118,153,.04); }
           <option value="15">15교시 종료 (24:00)</option>
         </select>
         <input type="color" id="tt-color" value="#7D7699">
-        <div class="color-swatches"><span class="swatch" style="background:#B8A9D9" onclick="pickColor('tt-color','#B8A9D9')" title="#B8A9D9"></span><span class="swatch" style="background:#F2B8C6" onclick="pickColor('tt-color','#F2B8C6')" title="#F2B8C6"></span><span class="swatch" style="background:#A8D0C4" onclick="pickColor('tt-color','#A8D0C4')" title="#A8D0C4"></span><span class="swatch" style="background:#F5C99B" onclick="pickColor('tt-color','#F5C99B')" title="#F5C99B"></span><span class="swatch" style="background:#9DC3E6" onclick="pickColor('tt-color','#9DC3E6')" title="#9DC3E6"></span><span class="swatch" style="background:#F0DDA0" onclick="pickColor('tt-color','#F0DDA0')" title="#F0DDA0"></span></div>
+        <div class="color-swatches"><span class="swatch" style="background:#6C5B9E" onclick="pickColor('tt-color','#6C5B9E')" title="진한 라벤더"></span><span class="swatch" style="background:#C85C7A" onclick="pickColor('tt-color','#C85C7A')" title="진한 로즈"></span><span class="swatch" style="background:#3E8577" onclick="pickColor('tt-color','#3E8577')" title="진한 틸"></span><span class="swatch" style="background:#CC7A2E" onclick="pickColor('tt-color','#CC7A2E')" title="진한 앰버"></span><span class="swatch" style="background:#3D6FA5" onclick="pickColor('tt-color','#3D6FA5')" title="진한 블루"></span><span class="swatch" style="background:#A68A2E" onclick="pickColor('tt-color','#A68A2E')" title="진한 올리브"></span><span class="swatch swatch-important" style="background:#D64545" onclick="pickColor('tt-color','#D64545')" title="매우 중요"></span></div>
         <button class="btn" id="tt-submit-btn" onclick="saveTimetable()">등록</button>
         <button class="btn btn-danger" id="tt-cancel-btn" onclick="cancelTimetableEdit()" style="display:none;">취소</button>
       </div>
@@ -1200,7 +1202,7 @@ tr:hover td { background:rgba(125,118,153,.04); }
           <option value="low">🟢 낮음</option>
         </select>
         <input type="color" id="task-color" value="#C0766A">
-        <div class="color-swatches"><span class="swatch" style="background:#B8A9D9" onclick="pickColor('task-color','#B8A9D9')" title="#B8A9D9"></span><span class="swatch" style="background:#F2B8C6" onclick="pickColor('task-color','#F2B8C6')" title="#F2B8C6"></span><span class="swatch" style="background:#A8D0C4" onclick="pickColor('task-color','#A8D0C4')" title="#A8D0C4"></span><span class="swatch" style="background:#F5C99B" onclick="pickColor('task-color','#F5C99B')" title="#F5C99B"></span><span class="swatch" style="background:#9DC3E6" onclick="pickColor('task-color','#9DC3E6')" title="#9DC3E6"></span><span class="swatch" style="background:#F0DDA0" onclick="pickColor('task-color','#F0DDA0')" title="#F0DDA0"></span></div>
+        <div class="color-swatches"><span class="swatch" style="background:#6C5B9E" onclick="pickColor('task-color','#6C5B9E')" title="진한 라벤더"></span><span class="swatch" style="background:#C85C7A" onclick="pickColor('task-color','#C85C7A')" title="진한 로즈"></span><span class="swatch" style="background:#3E8577" onclick="pickColor('task-color','#3E8577')" title="진한 틸"></span><span class="swatch" style="background:#CC7A2E" onclick="pickColor('task-color','#CC7A2E')" title="진한 앰버"></span><span class="swatch" style="background:#3D6FA5" onclick="pickColor('task-color','#3D6FA5')" title="진한 블루"></span><span class="swatch" style="background:#A68A2E" onclick="pickColor('task-color','#A68A2E')" title="진한 올리브"></span><span class="swatch swatch-important" style="background:#D64545" onclick="pickColor('task-color','#D64545')" title="매우 중요"></span></div>
         <input type="number" id="task-week" placeholder="주차" min="1" max="20" style="width:64px;">
         <button class="btn" id="task-submit-btn" onclick="addTask()">추가</button>
         <button class="btn btn-outline" id="task-cancel-btn" onclick="cancelTaskEdit()" style="display:none;">취소</button>
@@ -1326,7 +1328,7 @@ tr:hover td { background:rgba(125,118,153,.04); }
         <input type="text" id="exp-region" placeholder="지역" style="width:80px;">
         <input type="text" id="exp-memo" placeholder="메모" style="flex:1;">
         <input type="color" id="exp-color" value="#7D7699">
-        <div class="color-swatches"><span class="swatch" style="background:#B8A9D9" onclick="pickColor('exp-color','#B8A9D9')" title="#B8A9D9"></span><span class="swatch" style="background:#F2B8C6" onclick="pickColor('exp-color','#F2B8C6')" title="#F2B8C6"></span><span class="swatch" style="background:#A8D0C4" onclick="pickColor('exp-color','#A8D0C4')" title="#A8D0C4"></span><span class="swatch" style="background:#F5C99B" onclick="pickColor('exp-color','#F5C99B')" title="#F5C99B"></span><span class="swatch" style="background:#9DC3E6" onclick="pickColor('exp-color','#9DC3E6')" title="#9DC3E6"></span><span class="swatch" style="background:#F0DDA0" onclick="pickColor('exp-color','#F0DDA0')" title="#F0DDA0"></span></div>
+        <div class="color-swatches"><span class="swatch" style="background:#6C5B9E" onclick="pickColor('exp-color','#6C5B9E')" title="진한 라벤더"></span><span class="swatch" style="background:#C85C7A" onclick="pickColor('exp-color','#C85C7A')" title="진한 로즈"></span><span class="swatch" style="background:#3E8577" onclick="pickColor('exp-color','#3E8577')" title="진한 틸"></span><span class="swatch" style="background:#CC7A2E" onclick="pickColor('exp-color','#CC7A2E')" title="진한 앰버"></span><span class="swatch" style="background:#3D6FA5" onclick="pickColor('exp-color','#3D6FA5')" title="진한 블루"></span><span class="swatch" style="background:#A68A2E" onclick="pickColor('exp-color','#A68A2E')" title="진한 올리브"></span><span class="swatch swatch-important" style="background:#D64545" onclick="pickColor('exp-color','#D64545')" title="매우 중요"></span></div>
         <button class="btn" id="exp-submit-btn" onclick="saveExperience()">등록</button>
         <button class="btn btn-danger" id="exp-cancel-btn" onclick="cancelExpEdit()" style="display:none;">취소</button>
       </div>
@@ -1743,7 +1745,7 @@ tr:hover td { background:rgba(125,118,153,.04); }
     <div class="popup-field" style="display:flex;align-items:center;gap:10px;">
       <label style="margin:0;">색상</label>
       <input type="color" id="pop-color" value="#7D7699" style="width:40px;height:32px;border-radius:7px;border:1px solid var(--line2);padding:2px;cursor:pointer;">
-        <div class="color-swatches"><span class="swatch" style="background:#B8A9D9" onclick="pickColor('pop-color','#B8A9D9')" title="#B8A9D9"></span><span class="swatch" style="background:#F2B8C6" onclick="pickColor('pop-color','#F2B8C6')" title="#F2B8C6"></span><span class="swatch" style="background:#A8D0C4" onclick="pickColor('pop-color','#A8D0C4')" title="#A8D0C4"></span><span class="swatch" style="background:#F5C99B" onclick="pickColor('pop-color','#F5C99B')" title="#F5C99B"></span><span class="swatch" style="background:#9DC3E6" onclick="pickColor('pop-color','#9DC3E6')" title="#9DC3E6"></span><span class="swatch" style="background:#F0DDA0" onclick="pickColor('pop-color','#F0DDA0')" title="#F0DDA0"></span></div>
+        <div class="color-swatches"><span class="swatch" style="background:#6C5B9E" onclick="pickColor('pop-color','#6C5B9E')" title="진한 라벤더"></span><span class="swatch" style="background:#C85C7A" onclick="pickColor('pop-color','#C85C7A')" title="진한 로즈"></span><span class="swatch" style="background:#3E8577" onclick="pickColor('pop-color','#3E8577')" title="진한 틸"></span><span class="swatch" style="background:#CC7A2E" onclick="pickColor('pop-color','#CC7A2E')" title="진한 앰버"></span><span class="swatch" style="background:#3D6FA5" onclick="pickColor('pop-color','#3D6FA5')" title="진한 블루"></span><span class="swatch" style="background:#A68A2E" onclick="pickColor('pop-color','#A68A2E')" title="진한 올리브"></span><span class="swatch swatch-important" style="background:#D64545" onclick="pickColor('pop-color','#D64545')" title="매우 중요"></span></div>
     </div>
     <div class="popup-acts">
       <button class="save" id="pop-save-btn" onclick="savePopEvent()">등록</button>
