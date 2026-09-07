@@ -66,6 +66,7 @@
   --sage:    #7A9E8E;   /* sage green */
   --love:    #C0527A;   /* love pink */
   --together:#C9A66B;   /* 같이 하는 일정 - 더스티 골드 */
+  --school:  #5B8DBF;   /* 학교 일정 - 소프트 블루 */
   --saturday:#3A6EA5;   /* 토요일 파란색 */
   --shadow:  0 4px 24px rgba(42,39,50,.07);
   --shadow2: 0 8px 36px rgba(42,39,50,.11);
@@ -268,6 +269,13 @@ body {
 
 /* ── 폼 ── */
 .form-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+.color-swatches { display:inline-flex; gap:5px; align-items:center; }
+.swatch {
+  display:inline-block; width:19px; height:19px; border-radius:50%;
+  border:1.5px solid rgba(0,0,0,.08); cursor:pointer; transition:transform .1s, box-shadow .1s;
+  flex-shrink:0;
+}
+.swatch:hover { transform:scale(1.18); box-shadow:0 1px 4px rgba(0,0,0,.15); }
 .form-row input, .form-row select {
   font-family:inherit; font-size:12.5px;
   border:1px solid var(--line2); background:#fff;
@@ -444,6 +452,7 @@ tr:hover td { background:rgba(125,118,153,.04); }
 .type-btn.active-mine { border-color:var(--accent); background:rgba(125,118,153,.08); color:var(--accent); }
 .type-btn.active-bf { border-color:var(--love); background:rgba(192,82,122,.08); color:var(--love); }
 .type-btn.active-together { border-color:var(--together); background:rgba(201,166,107,.08); color:var(--together); }
+.type-btn.active-school { border-color:var(--school); background:rgba(91,141,191,.08); color:var(--school); }
 
 /* ── 시간표 ── */
 .timetable { width:100%; table-layout:fixed; border-collapse:collapse; text-align:center; }
@@ -1051,21 +1060,27 @@ tr:hover td { background:rgba(125,118,153,.04); }
       <div>
         <div class="card" style="margin-bottom:18px;cursor:default;">
           <div class="card-title" onclick="toggleEvCard('mine')" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;margin-bottom:0;">
-            <span>😶</span><span class="ev-chevron" id="mine-chevron">▾</span>
+            <span>😶</span><span class="ev-chevron" id="mine-chevron" style="transform:rotate(-90deg);">▾</span>
           </div>
-          <div id="mine-event-list" class="ev-list-body" style="margin-top:4px;"><p style="color:var(--ink-soft);font-size:13px;padding:6px 0;">등록된 일정이 없어요</p></div>
+          <div id="mine-event-list" class="ev-list-body" style="margin-top:4px;display:none;"><p style="color:var(--ink-soft);font-size:13px;padding:6px 0;">등록된 일정이 없어요</p></div>
         </div>
         <div class="card" style="margin-bottom:18px;cursor:default;">
           <div class="card-title" onclick="toggleEvCard('bf')" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;margin-bottom:0;">
-            <span>🐍</span><span class="ev-chevron" id="bf-chevron">▾</span>
+            <span>🐍</span><span class="ev-chevron" id="bf-chevron" style="transform:rotate(-90deg);">▾</span>
           </div>
-          <div id="bf-event-list" class="ev-list-body" style="margin-top:4px;"><p style="color:var(--ink-soft);font-size:13px;padding:6px 0;">등록된 일정이 없어요</p></div>
+          <div id="bf-event-list" class="ev-list-body" style="margin-top:4px;display:none;"><p style="color:var(--ink-soft);font-size:13px;padding:6px 0;">등록된 일정이 없어요</p></div>
+        </div>
+        <div class="card" style="margin-bottom:18px;cursor:default;">
+          <div class="card-title" onclick="toggleEvCard('together')" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;margin-bottom:0;">
+            <span>💑</span><span class="ev-chevron" id="together-chevron" style="transform:rotate(-90deg);">▾</span>
+          </div>
+          <div id="together-event-list" class="ev-list-body" style="margin-top:4px;display:none;"><p style="color:var(--ink-soft);font-size:13px;padding:6px 0;">등록된 일정이 없어요</p></div>
         </div>
         <div class="card" style="cursor:default;">
-          <div class="card-title" onclick="toggleEvCard('together')" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;margin-bottom:0;">
-            <span>💑</span><span class="ev-chevron" id="together-chevron">▾</span>
+          <div class="card-title" onclick="toggleEvCard('school')" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;margin-bottom:0;">
+            <span>🏫</span><span class="ev-chevron" id="school-chevron" style="transform:rotate(-90deg);">▾</span>
           </div>
-          <div id="together-event-list" class="ev-list-body" style="margin-top:4px;"><p style="color:var(--ink-soft);font-size:13px;padding:6px 0;">등록된 일정이 없어요</p></div>
+          <div id="school-event-list" class="ev-list-body" style="margin-top:4px;display:none;"><p style="color:var(--ink-soft);font-size:13px;padding:6px 0;">등록된 일정이 없어요</p></div>
         </div>
       </div>
     </div>
@@ -1134,11 +1149,23 @@ tr:hover td { background:rgba(125,118,153,.04); }
           <option value="15">15교시 종료 (24:00)</option>
         </select>
         <input type="color" id="tt-color" value="#7D7699">
+        <div class="color-swatches"><span class="swatch" style="background:#B8A9D9" onclick="pickColor('tt-color','#B8A9D9')" title="#B8A9D9"></span><span class="swatch" style="background:#F2B8C6" onclick="pickColor('tt-color','#F2B8C6')" title="#F2B8C6"></span><span class="swatch" style="background:#A8D0C4" onclick="pickColor('tt-color','#A8D0C4')" title="#A8D0C4"></span><span class="swatch" style="background:#F5C99B" onclick="pickColor('tt-color','#F5C99B')" title="#F5C99B"></span><span class="swatch" style="background:#9DC3E6" onclick="pickColor('tt-color','#9DC3E6')" title="#9DC3E6"></span><span class="swatch" style="background:#F0DDA0" onclick="pickColor('tt-color','#F0DDA0')" title="#F0DDA0"></span></div>
         <button class="btn" id="tt-submit-btn" onclick="saveTimetable()">등록</button>
         <button class="btn btn-danger" id="tt-cancel-btn" onclick="cancelTimetableEdit()" style="display:none;">취소</button>
       </div>
     </div>
-    <div id="timetable-stack-container"></div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div class="card-title">🕐 시간표</div>
+        <select id="tt-view-semester" onchange="drawTimetableMatrix()" style="font-family:inherit;font-size:13px;padding:7px 10px;border:1px solid var(--line2);border-radius:8px;">
+          <option value="1-1">1학년 1학기</option><option value="1-2" selected>1학년 2학기</option>
+          <option value="2-1">2학년 1학기</option><option value="2-2">2학년 2학기</option>
+          <option value="3-1">3학년 1학기</option><option value="3-2">3학년 2학기</option>
+          <option value="4-1">4학년 1학기</option><option value="4-2">4학년 2학기</option>
+        </select>
+      </div>
+      <div id="timetable-stack-container" style="margin-top:12px;"></div>
+    </div>
   </div>
 
   <!-- ══ 과제/시험 탭 ══ -->
@@ -1155,6 +1182,7 @@ tr:hover td { background:rgba(125,118,153,.04); }
       </div>
       <div class="card-title">📚 과제/시험 등록</div>
       <div class="form-row">
+        <input type="hidden" id="task-edit-id">
         <select id="task-type">
           <option value="강의">📖 강의</option>
           <option value="과제">📝 과제</option>
@@ -1172,11 +1200,10 @@ tr:hover td { background:rgba(125,118,153,.04); }
           <option value="low">🟢 낮음</option>
         </select>
         <input type="color" id="task-color" value="#C0766A">
+        <div class="color-swatches"><span class="swatch" style="background:#B8A9D9" onclick="pickColor('task-color','#B8A9D9')" title="#B8A9D9"></span><span class="swatch" style="background:#F2B8C6" onclick="pickColor('task-color','#F2B8C6')" title="#F2B8C6"></span><span class="swatch" style="background:#A8D0C4" onclick="pickColor('task-color','#A8D0C4')" title="#A8D0C4"></span><span class="swatch" style="background:#F5C99B" onclick="pickColor('task-color','#F5C99B')" title="#F5C99B"></span><span class="swatch" style="background:#9DC3E6" onclick="pickColor('task-color','#9DC3E6')" title="#9DC3E6"></span><span class="swatch" style="background:#F0DDA0" onclick="pickColor('task-color','#F0DDA0')" title="#F0DDA0"></span></div>
         <input type="number" id="task-week" placeholder="주차" min="1" max="20" style="width:64px;">
-        <label style="display:flex;align-items:center;gap:5px;font-size:13px;color:var(--ink-soft);cursor:pointer;white-space:nowrap;">
-          <input type="checkbox" id="task-repeat" style="width:15px;height:15px;cursor:pointer;">🔁 매주 반복(12주)
-        </label>
-        <button class="btn" onclick="addTask()">추가</button>
+        <button class="btn" id="task-submit-btn" onclick="addTask()">추가</button>
+        <button class="btn btn-outline" id="task-cancel-btn" onclick="cancelTaskEdit()" style="display:none;">취소</button>
       </div>
     </div>
     <div class="card">
@@ -1191,7 +1218,7 @@ tr:hover td { background:rgba(125,118,153,.04); }
         <button class="btn btn-sm btn-outline" onclick="clearTaskSelection()">선택 취소</button>
       </div>
       <div class="table-scroll"><table>
-        <thead><tr><th style="width:34px;"><input type="checkbox" id="task-select-all" onchange="toggleTaskSelectAll(this.checked)"></th><th>종류</th><th>내용</th><th>주차</th><th>마감</th><th>D-day</th><th>우선순위</th><th>강의</th><th>과제</th></tr></thead>
+        <thead><tr><th style="width:34px;"><input type="checkbox" id="task-select-all" onchange="toggleTaskSelectAll(this.checked)"></th><th>종류</th><th>내용</th><th>주차</th><th>마감</th><th>D-day</th><th>우선순위</th><th>강의</th><th>과제</th><th>관리</th></tr></thead>
         <tbody id="task-tbody"></tbody>
       </table></div>
       <div id="task-hidden-note" style="font-size:12px;color:var(--ink-soft);margin-top:6px;"></div>
@@ -1204,7 +1231,7 @@ tr:hover td { background:rgba(125,118,153,.04); }
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
         <div class="card-title">📊 학점 관리</div>
         <select id="grade-semester" onchange="renderGrades()" style="font-family:inherit;font-size:13px;padding:7px 10px;border:1px solid var(--line2);border-radius:8px;">
-          <option value="1-1">1학년 1학기</option><option value="1-2">1학년 2학기</option>
+          <option value="1-1">1학년 1학기</option><option value="1-2" selected>1학년 2학기</option>
           <option value="2-1">2학년 1학기</option><option value="2-2">2학년 2학기</option>
           <option value="3-1">3학년 1학기</option><option value="3-2">3학년 2학기</option>
           <option value="4-1">4학년 1학기</option><option value="4-2">4학년 2학기</option>
@@ -1299,6 +1326,7 @@ tr:hover td { background:rgba(125,118,153,.04); }
         <input type="text" id="exp-region" placeholder="지역" style="width:80px;">
         <input type="text" id="exp-memo" placeholder="메모" style="flex:1;">
         <input type="color" id="exp-color" value="#7D7699">
+        <div class="color-swatches"><span class="swatch" style="background:#B8A9D9" onclick="pickColor('exp-color','#B8A9D9')" title="#B8A9D9"></span><span class="swatch" style="background:#F2B8C6" onclick="pickColor('exp-color','#F2B8C6')" title="#F2B8C6"></span><span class="swatch" style="background:#A8D0C4" onclick="pickColor('exp-color','#A8D0C4')" title="#A8D0C4"></span><span class="swatch" style="background:#F5C99B" onclick="pickColor('exp-color','#F5C99B')" title="#F5C99B"></span><span class="swatch" style="background:#9DC3E6" onclick="pickColor('exp-color','#9DC3E6')" title="#9DC3E6"></span><span class="swatch" style="background:#F0DDA0" onclick="pickColor('exp-color','#F0DDA0')" title="#F0DDA0"></span></div>
         <button class="btn" id="exp-submit-btn" onclick="saveExperience()">등록</button>
         <button class="btn btn-danger" id="exp-cancel-btn" onclick="cancelExpEdit()" style="display:none;">취소</button>
       </div>
@@ -1691,6 +1719,7 @@ tr:hover td { background:rgba(125,118,153,.04); }
       <button class="type-btn active-mine" id="pop-type-mine" onclick="selectPopType('mine')">😶 나의 일정</button>
       <button class="type-btn" id="pop-type-bf" onclick="selectPopType('bf')">🐍 남친 일정</button>
       <button class="type-btn" id="pop-type-together" onclick="selectPopType('together')">💑 같이 일정</button>
+      <button class="type-btn" id="pop-type-school" onclick="selectPopType('school')">🏫 학교 일정</button>
     </div>
     <div class="popup-field"><label>일정 제목</label><input type="text" id="pop-title" placeholder="제목을 입력하세요"></div>
     <div class="popup-field"><label>시작일</label><input type="date" id="pop-start"></div>
@@ -1714,6 +1743,7 @@ tr:hover td { background:rgba(125,118,153,.04); }
     <div class="popup-field" style="display:flex;align-items:center;gap:10px;">
       <label style="margin:0;">색상</label>
       <input type="color" id="pop-color" value="#7D7699" style="width:40px;height:32px;border-radius:7px;border:1px solid var(--line2);padding:2px;cursor:pointer;">
+        <div class="color-swatches"><span class="swatch" style="background:#B8A9D9" onclick="pickColor('pop-color','#B8A9D9')" title="#B8A9D9"></span><span class="swatch" style="background:#F2B8C6" onclick="pickColor('pop-color','#F2B8C6')" title="#F2B8C6"></span><span class="swatch" style="background:#A8D0C4" onclick="pickColor('pop-color','#A8D0C4')" title="#A8D0C4"></span><span class="swatch" style="background:#F5C99B" onclick="pickColor('pop-color','#F5C99B')" title="#F5C99B"></span><span class="swatch" style="background:#9DC3E6" onclick="pickColor('pop-color','#9DC3E6')" title="#9DC3E6"></span><span class="swatch" style="background:#F0DDA0" onclick="pickColor('pop-color','#F0DDA0')" title="#F0DDA0"></span></div>
     </div>
     <div class="popup-acts">
       <button class="save" id="pop-save-btn" onclick="savePopEvent()">등록</button>
@@ -1727,7 +1757,7 @@ tr:hover td { background:rgba(125,118,153,.04); }
 // ── 데이터 ──
 let appData = {
   todos:[], memos:[], tasks:[], grades:[], timetables:[],
-  mineEvents:[], bfEvents:[], togetherEvents:[], periodDates:[], loveDates:[], experiences:[], moneyRecords:[], fixedExpenses:[], incomePlans:[], savingGoals:{}, savingNotes:[], piggyBank:[], diaries:{}, diaryPin:null
+  mineEvents:[], bfEvents:[], togetherEvents:[], schoolEvents:[], periodDates:[], loveDates:[], experiences:[], moneyRecords:[], fixedExpenses:[], incomePlans:[], savingGoals:{}, savingNotes:[], piggyBank:[], diaries:{}, diaryPin:null
 };
 
 // 초기 불러오기 완료 전에는 Firebase 저장을 차단한다.
@@ -1735,7 +1765,7 @@ let appData = {
 let dataLoaded = false;
 
 function normalizeAppData() {
-  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','togetherEvents','periodDates','loveDates','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank','savingNotes'];
+  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','togetherEvents','schoolEvents','periodDates','loveDates','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank','savingNotes'];
   arrayKeys.forEach(k => { if(!Array.isArray(appData[k])) appData[k] = []; });
   if(!appData.savingGoals || typeof appData.savingGoals !== 'object' || Array.isArray(appData.savingGoals)) appData.savingGoals = {};
   if(!appData.diaries || typeof appData.diaries !== 'object' || Array.isArray(appData.diaries)) appData.diaries = {};
@@ -1749,7 +1779,7 @@ function normalizeAppData() {
 
 function isMeaningfulData(data) {
   if(!data || typeof data !== 'object') return false;
-  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','togetherEvents','periodDates','loveDates','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank','savingNotes'];
+  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','togetherEvents','schoolEvents','periodDates','loveDates','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank','savingNotes'];
   const hasArrayData = arrayKeys.some(k => Array.isArray(data[k]) && data[k].length > 0);
   const hasDiaryData = data.diaries && typeof data.diaries === 'object' && !Array.isArray(data.diaries) && Object.keys(data.diaries).length > 0;
   const hasSettings = !!data.diaryPin || !!data.currentSemester || (data.savingGoals && typeof data.savingGoals === 'object' && Object.keys(data.savingGoals).length > 0);
@@ -1899,33 +1929,53 @@ function addTask() {
   const type = document.getElementById('task-type').value;
   const priority = document.getElementById('task-priority').value;
   const color = document.getElementById('task-color').value;
-  const repeat = document.getElementById('task-repeat').checked;
   const weekInput = document.getElementById('task-week').value;
-  const baseWeek = weekInput ? parseInt(weekInput) : null;
-  const count = repeat ? 12 : 1; // 매주 반복 시 한 학기(12주)치 미리 생성
-  const baseId = Date.now();
-  const startDate = new Date(date + 'T00:00:00');
-  for(let i=0; i<count; i++){
-    const d = new Date(startDate);
-    d.setDate(d.getDate() + 7*i);
-    appData.tasks.push({
-      id: baseId + i,
-      type, name,
-      date: d.toISOString().split('T')[0],
-      priority, color,
-      week: baseWeek !== null ? baseWeek + i : null,
-      done: false,
-      lectureDone: false,
-      assignmentDone: false,
-      isRepeat: i > 0
-    });
+  const week = weekInput ? parseInt(weekInput) : null;
+  const editId = document.getElementById('task-edit-id').value;
+
+  if(editId) {
+    const t = appData.tasks.find(x=>String(x.id)===String(editId));
+    if(t) { t.type=type; t.name=name; t.date=date; t.priority=priority; t.color=color; t.week=week; }
+    cancelTaskEdit();
+    saveAndRender();
+    showToast('과제 내용을 수정했어요! ✓', '📝');
+    return;
   }
+
+  appData.tasks.push({
+    id: Date.now(),
+    type, name, date,
+    priority, color, week,
+    done: false,
+    lectureDone: false,
+    assignmentDone: false
+  });
   document.getElementById('task-name').value = '';
   document.getElementById('task-date').value = '';
   document.getElementById('task-week').value = '';
-  document.getElementById('task-repeat').checked = false;
   saveAndRender();
-  if(repeat) showToast('매주 반복 과제 12개를 등록했어요! 🔁', '📝');
+}
+function editTask(id) {
+  const t = appData.tasks.find(x=>x.id===id);
+  if(!t) return;
+  document.getElementById('task-edit-id').value = t.id;
+  document.getElementById('task-type').value = t.type;
+  document.getElementById('task-name').value = t.name;
+  document.getElementById('task-date').value = t.date;
+  document.getElementById('task-priority').value = t.priority;
+  document.getElementById('task-color').value = t.color || '#C0766A';
+  document.getElementById('task-week').value = t.week || '';
+  document.getElementById('task-submit-btn').innerText = '수정 완료';
+  document.getElementById('task-cancel-btn').style.display = 'inline-block';
+  document.getElementById('task-name').scrollIntoView({behavior:'smooth', block:'center'});
+}
+function cancelTaskEdit() {
+  document.getElementById('task-edit-id').value = '';
+  document.getElementById('task-name').value = '';
+  document.getElementById('task-date').value = '';
+  document.getElementById('task-week').value = '';
+  document.getElementById('task-submit-btn').innerText = '추가';
+  document.getElementById('task-cancel-btn').style.display = 'none';
 }
 function deleteTask(id) {
   appData.tasks = appData.tasks.filter(x => x.id !== id);
@@ -2002,6 +2052,7 @@ function selectCalType(t) {
 function getEventList(type) {
   if(type==='mine') return appData.mineEvents;
   if(type==='bf') return appData.bfEvents;
+  if(type==='school') return appData.schoolEvents;
   return appData.togetherEvents;
 }
 function selectPopType(t) {
@@ -2009,7 +2060,8 @@ function selectPopType(t) {
   document.getElementById('pop-type-mine').className = 'type-btn' + (t==='mine'?' active-mine':'');
   document.getElementById('pop-type-bf').className = 'type-btn' + (t==='bf'?' active-bf':'');
   document.getElementById('pop-type-together').className = 'type-btn' + (t==='together'?' active-together':'');
-  document.getElementById('pop-color').value = t==='mine' ? '#7D7699' : t==='bf' ? '#C0527A' : '#C9A66B';
+  document.getElementById('pop-type-school').className = 'type-btn' + (t==='school'?' active-school':'');
+  document.getElementById('pop-color').value = t==='mine' ? '#7D7699' : t==='bf' ? '#C0527A' : t==='school' ? '#5B8DBF' : '#C9A66B';
 }
 function addCalEvent() {
   const title = document.getElementById('cal-title').value.trim();
@@ -2127,9 +2179,9 @@ function savePopEvent() {
   saveAndRender();
 }
 function deleteEvent(id, type) {
-  if(type==='mine') appData.mineEvents = appData.mineEvents.filter(x=>x.id!==id);
-  else if(type==='bf') appData.bfEvents = appData.bfEvents.filter(x=>x.id!==id);
-  else appData.togetherEvents = appData.togetherEvents.filter(x=>x.id!==id);
+  const list = getEventList(type);
+  const idx = list.findIndex(x=>x.id===id);
+  if(idx!==-1) list.splice(idx,1);
   saveAndRender();
 }
 function editEvent(id, type) {
@@ -2158,9 +2210,9 @@ function deletePopEvent() {
   const editType = document.getElementById('pop-edit-type')?.value;
   if(!editId) return;
   if(!confirm('이 일정을 삭제할까요?')) return;
-  if(editType==='mine') appData.mineEvents = appData.mineEvents.filter(x=>String(x.id)!==String(editId));
-  else if(editType==='bf') appData.bfEvents = appData.bfEvents.filter(x=>String(x.id)!==String(editId));
-  else appData.togetherEvents = appData.togetherEvents.filter(x=>String(x.id)!==String(editId));
+  const list = getEventList(editType);
+  const idx = list.findIndex(x=>String(x.id)===String(editId));
+  if(idx!==-1) list.splice(idx,1);
   closePopup();
   saveAndRender();
 }
@@ -2191,6 +2243,11 @@ function fmtTimeRange(ev) {
   if(!ev || !ev.timeStart) return '';
   return ev.timeEnd ? `${ev.timeStart}-${ev.timeEnd}` : ev.timeStart;
 }
+function pickColor(inputId, hex) {
+  const el = document.getElementById(inputId);
+  if(el) el.value = hex;
+}
+
 function hexToRgb(hex) {
   hex = (hex||'#7D7699').replace('#','');
   if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
@@ -2227,29 +2284,46 @@ const KOREAN_HOLIDAYS = {
 function buildCalendarGrid(year, month) {
   const firstDay = new Date(year, month, 1).getDay();
   const lastDate = new Date(year, month+1, 0).getDate();
+  const prevMonthLastDate = new Date(year, month, 0).getDate();
   const now = new Date();
   const todayStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
 
   const dateCells = [];
-  for(let i=0;i<firstDay;i++) dateCells.push(null);
+  for(let i=firstDay-1;i>=0;i--){
+    const dayNum = prevMonthLastDate - i;
+    const pm = month===0 ? 11 : month-1;
+    const py = month===0 ? year-1 : year;
+    dateCells.push({ date:`${py}-${String(pm+1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`, other:true });
+  }
   for(let d=1;d<=lastDate;d++){
-    dateCells.push(`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`);
+    dateCells.push({ date:`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`, other:false });
+  }
+  const remainder = dateCells.length % 7;
+  if(remainder !== 0){
+    const need = 7 - remainder;
+    const nm = month===11 ? 0 : month+1;
+    const ny = month===11 ? year+1 : year;
+    for(let d=1; d<=need; d++){
+      dateCells.push({ date:`${ny}-${String(nm+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`, other:true });
+    }
   }
 
   const allEvents = [
     ...(appData.mineEvents||[]).map(e=>({...e, _etype:'mine'})),
     ...(appData.bfEvents||[]).map(e=>({...e, _etype:'bf'})),
     ...(appData.togetherEvents||[]).map(e=>({...e, _etype:'together'})),
+    ...(appData.schoolEvents||[]).map(e=>({...e, _etype:'school'})),
     ...(appData.experiences||[]).filter(e=>e.visitDate && e.status!=='완료').map(e=>({
       id:e.id, title:'🎯 '+e.name, startDate:e.visitDate, endDate:e.visitDate,
       color:e.color||'#7A9E8E', timeStart:e.visitTime||'', timeEnd:'', _etype:'experience'
     })),
   ].sort((a,b)=>a.startDate.localeCompare(b.startDate));
 
+  const cellDates = dateCells.map(c=>c.date);
   const slots = {};
-  dateCells.forEach(d=>{ if(d) slots[d]=[]; });
+  cellDates.forEach(d=>{ slots[d]=[]; });
   allEvents.forEach(ev => {
-    const evDates = dateCells.filter(d=>d&&d>=ev.startDate&&d<=ev.endDate);
+    const evDates = cellDates.filter(d=>d>=ev.startDate&&d<=ev.endDate);
     if(!evDates.length) return;
     let slotIdx = 0;
     while(true){
@@ -2262,8 +2336,9 @@ function buildCalendarGrid(year, month) {
   });
 
   let html = '';
-  dateCells.forEach((dateStr,idx) => {
-    if(!dateStr){ html+=`<div></div>`; return; }
+  dateCells.forEach((cell,idx) => {
+    const dateStr = cell.date;
+    const isOther = cell.other;
     const d = parseInt(dateStr.split('-')[2]);
     const isToday = dateStr===todayStr;
     const dow = new Date(dateStr+'T00:00:00').getDay();
@@ -2271,10 +2346,11 @@ function buildCalendarGrid(year, month) {
     let numColor = 'var(--ink-soft)';
     if(holidayName || dow===0) numColor = 'var(--love)';
     else if(dow===6) numColor = 'var(--saturday)';
+    if(isOther) numColor = 'rgba(42,39,50,.28)';
     const isPeriod = (appData.periodDates||[]).includes(dateStr);
     const isLove = (appData.loveDates||[]).includes(dateStr);
     let evHtml = `<div class="cal-num" style="color:${numColor};font-weight:${isToday?800:600};" ${holidayName?`title="${holidayName}"`:''}>${d}${isPeriod?'<span style="font-size:8px;margin-left:2px;opacity:.75;">🍒</span>':''}${isLove?'<span style="font-size:8px;margin-left:2px;opacity:.75;">ღ</span>':''}</div>`;
-    const daySlots = slots[dateStr]||[];
+    const daySlots = isOther ? [] : (slots[dateStr]||[]);
     const maxSlots = daySlots.length;
     for(let s=0;s<maxSlots;s++){
       const ev = daySlots[s];
@@ -2283,7 +2359,10 @@ function buildCalendarGrid(year, month) {
       const isEnd   = ev.endDate===dateStr;
       const isSingle = ev.startDate===ev.endDate;
       const isWeekStart = idx%7===0;
-      const cls = isSingle?'ev-single':isStart||isWeekStart?'ev-start':isEnd?'ev-end':'ev-mid';
+      const isWeekEnd = idx%7===6;
+      const roundLeft = isStart || isWeekStart;
+      const roundRight = isEnd || isWeekEnd;
+      const cls = isSingle ? 'ev-single' : (roundLeft && roundRight) ? 'ev-single' : roundLeft ? 'ev-start' : roundRight ? 'ev-end' : 'ev-mid';
       const showTitle = isStart || isWeekStart;
       const timeLabel = fmtTimeRange(ev);
       const {r,g,b} = hexToRgb(ev.color||'#7D7699');
@@ -2292,7 +2371,7 @@ function buildCalendarGrid(year, month) {
       const clickFn = ev._etype==='experience' ? `editExperience(${ev.id})` : `editEvent(${ev.id},'${ev._etype}')`;
       evHtml+=`<div class="cal-ev ${cls}" style="background:${bg};color:${txtColor};" onclick="event.stopPropagation();${clickFn}"><span class="cal-ev-title">${showTitle?ev.title:''}</span>${showTitle&&timeLabel?`<span class="cal-ev-time">${timeLabel}</span>`:''}</div>`;
     }
-    html+=`<div class="cal-cell${isToday?' today':''}" onclick="openCalPopup('${dateStr}')" style="cursor:pointer;">${evHtml}</div>`;
+    html+=`<div class="cal-cell${isToday?' today':''}${isOther?' other-month':''}" onclick="openCalPopup('${dateStr}')" style="cursor:pointer;">${evHtml}</div>`;
   });
   return html;
 }
@@ -2355,6 +2434,18 @@ function renderCalendar() {
       <button class="ev-del" style="position:relative;z-index:10;" onclick="event.stopPropagation();deleteEvent(${e.id},'together')">×</button>
     </div>`).join('') || '<p style="color:var(--ink-soft);font-size:13px;padding:6px 0;">이 달엔 등록된 일정이 없어요</p>';
   document.getElementById('together-event-list').innerHTML = togetherHtml;
+
+  const schoolHtml = (appData.schoolEvents||[]).filter(inThisMonth).sort((a,b)=>a.startDate.localeCompare(b.startDate)).map(e=>`
+    <div class="ev-item">
+      <div class="ev-dot" style="background:${e.color||'#5B8DBF'}"></div>
+      <div class="ev-info">
+        <div class="ev-title">${e.title}</div>
+        <div class="ev-date">${fmtDate(e.startDate)}${e.startDate!==e.endDate?' ~ '+fmtDate(e.endDate):''}${fmtTimeRange(e)?' · '+fmtTimeRange(e):''}</div>
+      </div>
+      <button class="btn btn-sm btn-outline" style="padding:3px 8px;font-size:11px;position:relative;z-index:10;" onclick="event.stopPropagation();editEvent(${e.id},'school')">수정</button>
+      <button class="ev-del" style="position:relative;z-index:10;" onclick="event.stopPropagation();deleteEvent(${e.id},'school')">×</button>
+    </div>`).join('') || '<p style="color:var(--ink-soft);font-size:13px;padding:6px 0;">이 달엔 등록된 일정이 없어요</p>';
+  document.getElementById('school-event-list').innerHTML = schoolHtml;
 }
 
 const semesterMap = {'1-1':'1학년 1학기','1-2':'1학년 2학기','2-1':'2학년 1학기','2-2':'2학년 2학기','3-1':'3학년 1학기','3-2':'3학년 2학기','4-1':'4학년 1학기','4-2':'4학년 2학기'};
@@ -2425,40 +2516,31 @@ function deleteTimetable(id, event) {
 function drawTimetableMatrix() {
   const container = document.getElementById('timetable-stack-container');
   if(!container) return;
-  container.innerHTML='';
-  let sems = [...new Set(appData.timetables.map(i=>i.semester))];
-  if(!sems.includes('1-1')) sems.push('1-1');
-  sems.sort((a,b)=>b.localeCompare(a));
-  sems.forEach(semCode=>{
-    const semBlock = document.createElement('div');
-    semBlock.className='sem-block';
-    semBlock.innerHTML=`<div class="sem-title">${semesterMap[semCode]||semCode}</div>
-      <div class="table-scroll" style="overflow-x:auto;"><table class="timetable" style="min-width:500px;">
-      <thead><tr><th style="width:110px;">교시/시간</th><th>월요일</th><th>화요일</th><th>수요일</th><th>목요일</th><th>금요일</th><th style="color:#3A6EA5">토요일</th><th style="color:#C0527A">일요일</th></tr></thead>
-      <tbody id="tbody-sem-${semCode}"></tbody></table></div>`;
-    container.appendChild(semBlock);
-    const tbody=document.getElementById('tbody-sem-'+semCode);
-    const semData=appData.timetables.filter(i=>i.semester===semCode);
-    for(let p=1;p<=15;p++){
-      let tr=document.createElement('tr');
-      tr.innerHTML=`<td class="time-label" style="font-size:10.5px;color:var(--ink-soft);padding:3px 6px;white-space:pre-line;line-height:1.4;">${timeLabels[p-1]}</td>`;
-      for(let d=1;d<=7;d++){
-        const mc=semData.find(i=>i.day===d&&p>=i.start&&p<=i.end);
-        if(mc&&mc.start===p){
-          let td=document.createElement('td');
-          td.rowSpan=(mc.end-mc.start)+1;
-          td.style.padding='2px'; td.style.verticalAlign='top';
-          const {r,g,b} = hexToRgb(mc.color||'#7D7699');
-          const boxBg = `rgba(${r},${g},${b},0.16)`;
-          const boxBorder = `1.5px solid rgba(${r},${g},${b},0.4)`;
-          const boxText = mc.color||'#7D7699';
-          td.innerHTML=`<div class="timetable-cell-box" style="background:${boxBg};border:${boxBorder};color:${boxText};min-height:${(mc.end-mc.start+1)*38}px" onclick="editTimetable(${mc.id})"><button class="del-tt-btn" onclick="deleteTimetable(${mc.id},event)">×</button><div>${mc.subject}</div>${mc.room?`<div class="room">${mc.room}</div>`:''}</div>`;
-          tr.appendChild(td);
-        } else if(!mc){ tr.innerHTML+=`<td></td>`; }
-      }
-      tbody.appendChild(tr);
+  const semCode = document.getElementById('tt-view-semester')?.value || '1-2';
+  container.innerHTML = `<div class="table-scroll" style="overflow-x:auto;"><table class="timetable" style="min-width:500px;">
+    <thead><tr><th style="width:110px;">교시/시간</th><th>월요일</th><th>화요일</th><th>수요일</th><th>목요일</th><th>금요일</th><th style="color:#3A6EA5">토요일</th><th style="color:#C0527A">일요일</th></tr></thead>
+    <tbody id="tbody-sem-${semCode}"></tbody></table></div>`;
+  const tbody=document.getElementById('tbody-sem-'+semCode);
+  const semData=appData.timetables.filter(i=>i.semester===semCode);
+  for(let p=1;p<=15;p++){
+    let tr=document.createElement('tr');
+    tr.innerHTML=`<td class="time-label" style="font-size:10.5px;color:var(--ink-soft);padding:3px 6px;white-space:pre-line;line-height:1.4;">${timeLabels[p-1]}</td>`;
+    for(let d=1;d<=7;d++){
+      const mc=semData.find(i=>i.day===d&&p>=i.start&&p<=i.end);
+      if(mc&&mc.start===p){
+        let td=document.createElement('td');
+        td.rowSpan=(mc.end-mc.start)+1;
+        td.style.padding='2px'; td.style.verticalAlign='top';
+        const {r,g,b} = hexToRgb(mc.color||'#7D7699');
+        const boxBg = `rgba(${r},${g},${b},0.16)`;
+        const boxBorder = `1.5px solid rgba(${r},${g},${b},0.4)`;
+        const boxText = mc.color||'#7D7699';
+        td.innerHTML=`<div class="timetable-cell-box" style="background:${boxBg};border:${boxBorder};color:${boxText};min-height:${(mc.end-mc.start+1)*38}px" onclick="editTimetable(${mc.id})"><button class="del-tt-btn" onclick="deleteTimetable(${mc.id},event)">×</button><div>${mc.subject}</div>${mc.room?`<div class="room">${mc.room}</div>`:''}</div>`;
+        tr.appendChild(td);
+      } else if(!mc){ tr.innerHTML+=`<td></td>`; }
     }
-  });
+    tbody.appendChild(tr);
+  }
 }
 
 function renderTimetable() { drawTimetableMatrix(); }
@@ -2540,7 +2622,7 @@ function renderAll() {
   const expDone = (appData.experiences||[]).filter(e=>e.status==='완료').length;
   document.getElementById('stat-exp-done').innerText = expTotal>0?`${expDone}/${expTotal}`:'0';
   document.getElementById('stat-todos').innerText = appData.todos.filter(t=>!t.done).length;
-  document.getElementById('stat-events').innerText = (appData.mineEvents||[]).filter(e=>e.startDate.startsWith(thisMonth)).length + (appData.bfEvents||[]).filter(e=>e.startDate.startsWith(thisMonth)).length + (appData.togetherEvents||[]).filter(e=>e.startDate.startsWith(thisMonth)).length;
+  document.getElementById('stat-events').innerText = (appData.mineEvents||[]).filter(e=>e.startDate.startsWith(thisMonth)).length + (appData.bfEvents||[]).filter(e=>e.startDate.startsWith(thisMonth)).length + (appData.togetherEvents||[]).filter(e=>e.startDate.startsWith(thisMonth)).length + (appData.schoolEvents||[]).filter(e=>e.startDate.startsWith(thisMonth)).length;
 
   // 다가오는 마감
   const today = new Date(); today.setHours(0,0,0,0);
@@ -3107,6 +3189,7 @@ function renderWeekStrip() {
       ...(appData.mineEvents||[]).filter(e=>e.startDate<=ds&&e.endDate>=ds).map(e=>({...e,color:e.color||'#7D7699'})),
       ...(appData.bfEvents||[]).filter(e=>e.startDate<=ds&&e.endDate>=ds).map(e=>({...e,color:e.color||'#C0527A'})),
       ...(appData.togetherEvents||[]).filter(e=>e.startDate<=ds&&e.endDate>=ds).map(e=>({...e,color:e.color||'#C9A66B'})),
+      ...(appData.schoolEvents||[]).filter(e=>e.startDate<=ds&&e.endDate>=ds).map(e=>({...e,color:e.color||'#5B8DBF'})),
       ...(appData.experiences||[]).filter(e=>e.visitDate===ds).map(e=>({title:'📍'+e.name,color:e.color||'#7A9E8E'})),
     ];
 
@@ -3136,6 +3219,9 @@ function renderWeekStrip() {
       })),
       ...(appData.togetherEvents||[]).filter(e=>e.startDate<=ds&&e.endDate>=ds).map(e=>({
         title:e.title, color:e.color||'#C9A66B', meta:'💑 같이 일정'
+      })),
+      ...(appData.schoolEvents||[]).filter(e=>e.startDate<=ds&&e.endDate>=ds).map(e=>({
+        title:e.title, color:e.color||'#5B8DBF', meta:'🏫 학교 일정'
       })),
       ...(appData.experiences||[]).filter(e=>e.visitDate===ds&&e.status!=='완료').map(e=>({
         title:e.name, color:e.color||'#7A9E8E', meta:`🎯 체험단 방문${e.visitTime?' · '+e.visitTime:''}`
@@ -3443,6 +3529,10 @@ function handleSearch(q) {
   // 같이 일정
   (appData.togetherEvents||[]).filter(e=>e.title.toLowerCase().includes(kw)).forEach(e=>{
     results.push({ icon:'💑', title:e.title, meta:`${fmtDate(e.startDate)}${e.startDate!==e.endDate?' ~ '+fmtDate(e.endDate):''}`, action:()=>switchTab('calendar') });
+  });
+  // 학교 일정
+  (appData.schoolEvents||[]).filter(e=>e.title.toLowerCase().includes(kw)).forEach(e=>{
+    results.push({ icon:'🏫', title:e.title, meta:`${fmtDate(e.startDate)}${e.startDate!==e.endDate?' ~ '+fmtDate(e.endDate):''}`, action:()=>switchTab('calendar') });
   });
   // 체험단
   (appData.experiences||[]).filter(e=>e.name.toLowerCase().includes(kw)).forEach(e=>{
@@ -3872,9 +3962,10 @@ function renderTaskTable() {
         <td><span class="priority ${t.priority}">${t.priority==='high'?'높음':t.priority==='mid'?'중간':'낮음'}</span></td>
         <td style="text-align:center;"><input type="checkbox" title="강의 들음" ${t.lectureDone?'checked':''} onchange="toggleTaskSubDone(${t.id},'lecture',this.checked)"></td>
         <td style="text-align:center;"><input type="checkbox" title="과제 함" ${t.assignmentDone?'checked':''} onchange="toggleTaskSubDone(${t.id},'assignment',this.checked)"></td>
+        <td><button class="btn btn-sm btn-outline" onclick="editTask(${t.id})">✏️</button></td>
       </tr>`;
     }).join('') :
-    `<tr><td colspan="9" style="text-align:center;padding:20px;"><div class="empty-state">${EMPTY_ILLUST}<p>해당 항목이 없어요</p></div></td></tr>`;
+    `<tr><td colspan="10" style="text-align:center;padding:20px;"><div class="empty-state">${EMPTY_ILLUST}<p>해당 항목이 없어요</p></div></td></tr>`;
   updateTaskBulkBar();
 }
 
