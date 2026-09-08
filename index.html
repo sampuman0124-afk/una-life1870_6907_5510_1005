@@ -195,6 +195,8 @@ body {
   border-radius:16px; padding:18px 20px;
   box-shadow:var(--shadow); margin-bottom:16px;
 }
+.ev-side-card { padding:10px 14px; margin-bottom:8px !important; }
+.ev-side-card .card-title { font-size:15px; }
 .card-title {
   font-family:'Nanum Myeongjo',serif; font-size:17px; font-weight:700;
   display:flex; align-items:center; gap:8px; margin-bottom:4px; color:var(--ink);
@@ -207,7 +209,7 @@ body {
 @media(max-width:900px){.grid2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}}
 
 /* 캘린더 탭 전용: 달력을 넓게, 목록과의 여백을 넉넉하게 */
-#tab-calendar .grid2 { grid-template-columns:1.7fr 1fr; gap:22px; align-items:start; }
+#tab-calendar .grid2 { grid-template-columns:2.3fr 1fr; gap:18px; align-items:start; }
 #tab-calendar .card { margin-bottom:18px; }
 @media(max-width:900px){ #tab-calendar .grid2 { grid-template-columns:1fr; gap:16px; } }
 
@@ -828,6 +830,10 @@ tr:hover td { background:rgba(125,118,153,.04); }
   .cal-cell{ min-height:78px; }
   .cal-ev{ font-size:9.5px; min-height:20px; }
   .cal-ev-time{ font-size:7.5px; }
+
+  /* 캘린더 옆 카테고리별 일정 카드(😶🐍💑🏫) - 모바일에서 훨씬 작고 촘촘하게 */
+  .ev-side-card{ padding:6px 10px !important; margin-bottom:6px !important; }
+  .ev-side-card .card-title{ font-size:13px; }
 }
 
 @media(max-width:420px){
@@ -1060,25 +1066,25 @@ tr:hover td { background:rgba(125,118,153,.04); }
 
       <!-- 일정 목록 -->
       <div>
-        <div class="card" style="margin-bottom:18px;cursor:default;">
+        <div class="card ev-side-card" style="margin-bottom:18px;cursor:default;">
           <div class="card-title" onclick="toggleEvCard('mine')" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;margin-bottom:0;">
             <span>😶</span><span class="ev-chevron" id="mine-chevron" style="transform:rotate(-90deg);">▾</span>
           </div>
           <div id="mine-event-list" class="ev-list-body" style="margin-top:4px;display:none;"><p style="color:var(--ink-soft);font-size:13px;padding:6px 0;">등록된 일정이 없어요</p></div>
         </div>
-        <div class="card" style="margin-bottom:18px;cursor:default;">
+        <div class="card ev-side-card" style="margin-bottom:18px;cursor:default;">
           <div class="card-title" onclick="toggleEvCard('bf')" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;margin-bottom:0;">
             <span>🐍</span><span class="ev-chevron" id="bf-chevron" style="transform:rotate(-90deg);">▾</span>
           </div>
           <div id="bf-event-list" class="ev-list-body" style="margin-top:4px;display:none;"><p style="color:var(--ink-soft);font-size:13px;padding:6px 0;">등록된 일정이 없어요</p></div>
         </div>
-        <div class="card" style="margin-bottom:18px;cursor:default;">
+        <div class="card ev-side-card" style="margin-bottom:18px;cursor:default;">
           <div class="card-title" onclick="toggleEvCard('together')" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;margin-bottom:0;">
             <span>💑</span><span class="ev-chevron" id="together-chevron" style="transform:rotate(-90deg);">▾</span>
           </div>
           <div id="together-event-list" class="ev-list-body" style="margin-top:4px;display:none;"><p style="color:var(--ink-soft);font-size:13px;padding:6px 0;">등록된 일정이 없어요</p></div>
         </div>
-        <div class="card" style="cursor:default;">
+        <div class="card ev-side-card" style="cursor:default;">
           <div class="card-title" onclick="toggleEvCard('school')" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;margin-bottom:0;">
             <span>🏫</span><span class="ev-chevron" id="school-chevron" style="transform:rotate(-90deg);">▾</span>
           </div>
