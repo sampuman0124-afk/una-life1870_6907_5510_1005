@@ -1722,6 +1722,10 @@ tr:hover td { background:rgba(125,118,153,.04); }
         <input type="checkbox" id="pop-love-toggle" onchange="toggleLoveDate()" style="width:16px;height:16px;cursor:pointer;">
         ღ 이 날짜 표시
       </label>
+      <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;color:var(--ink-soft);margin:6px 0 0;">
+        <input type="checkbox" id="pop-workout-toggle" onchange="toggleWorkoutDate()" style="width:16px;height:16px;cursor:pointer;">
+        ⚡ 이 날짜 표시
+      </label>
     </div>
     <div class="type-row" id="pop-type-row">
       <button class="type-btn active-mine" id="pop-type-mine" onclick="selectPopType('mine')">😶 나의 일정</button>
@@ -1765,7 +1769,7 @@ tr:hover td { background:rgba(125,118,153,.04); }
 // ── 데이터 ──
 let appData = {
   todos:[], memos:[], tasks:[], grades:[], timetables:[],
-  mineEvents:[], bfEvents:[], togetherEvents:[], schoolEvents:[], periodDates:[], loveDates:[], experiences:[], moneyRecords:[], fixedExpenses:[], incomePlans:[], savingGoals:{}, savingNotes:[], piggyBank:[], diaries:{}, diaryPin:null
+  mineEvents:[], bfEvents:[], togetherEvents:[], schoolEvents:[], periodDates:[], loveDates:[], workoutDates:[], experiences:[], moneyRecords:[], fixedExpenses:[], incomePlans:[], savingGoals:{}, savingNotes:[], piggyBank:[], diaries:{}, diaryPin:null
 };
 
 // 초기 불러오기 완료 전에는 Firebase 저장을 차단한다.
@@ -1773,7 +1777,7 @@ let appData = {
 let dataLoaded = false;
 
 function normalizeAppData() {
-  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','togetherEvents','schoolEvents','periodDates','loveDates','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank','savingNotes'];
+  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','togetherEvents','schoolEvents','periodDates','loveDates','workoutDates','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank','savingNotes'];
   arrayKeys.forEach(k => { if(!Array.isArray(appData[k])) appData[k] = []; });
   if(!appData.savingGoals || typeof appData.savingGoals !== 'object' || Array.isArray(appData.savingGoals)) appData.savingGoals = {};
   if(!appData.diaries || typeof appData.diaries !== 'object' || Array.isArray(appData.diaries)) appData.diaries = {};
@@ -1787,7 +1791,7 @@ function normalizeAppData() {
 
 function isMeaningfulData(data) {
   if(!data || typeof data !== 'object') return false;
-  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','togetherEvents','schoolEvents','periodDates','loveDates','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank','savingNotes'];
+  const arrayKeys = ['todos','memos','tasks','grades','timetables','mineEvents','bfEvents','togetherEvents','schoolEvents','periodDates','loveDates','workoutDates','experiences','moneyRecords','fixedExpenses','incomePlans','piggyBank','savingNotes'];
   const hasArrayData = arrayKeys.some(k => Array.isArray(data[k]) && data[k].length > 0);
   const hasDiaryData = data.diaries && typeof data.diaries === 'object' && !Array.isArray(data.diaries) && Object.keys(data.diaries).length > 0;
   const hasSettings = !!data.diaryPin || !!data.currentSemester || (data.savingGoals && typeof data.savingGoals === 'object' && Object.keys(data.savingGoals).length > 0);
@@ -1795,6 +1799,15 @@ function isMeaningfulData(data) {
 }
 
 // ── 탭 전환 ──
+function jumpToCalendarDate(dateStr) {
+  const d = new Date(dateStr+'T00:00:00');
+  calYear = d.getFullYear();
+  calMonth = d.getMonth();
+  switchTab('calendar');
+  renderCalendar();
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-results').classList.remove('open');
+}
 function switchTab(name) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -2112,6 +2125,7 @@ function openCalPopup(dateStr) {
   document.getElementById('pop-cal-date').value = dateStr;
   document.getElementById('pop-period-toggle').checked = (appData.periodDates||[]).includes(dateStr);
   document.getElementById('pop-love-toggle').checked = (appData.loveDates||[]).includes(dateStr);
+  document.getElementById('pop-workout-toggle').checked = (appData.workoutDates||[]).includes(dateStr);
   document.getElementById('cal-popup-bg').classList.add('open');
   setTimeout(()=>{ const t=document.getElementById('pop-title'); if(t) t.focus(); }, 150);
 }
@@ -2136,6 +2150,18 @@ function toggleLoveDate() {
     if(!appData.loveDates.includes(dateStr)) appData.loveDates.push(dateStr);
   } else {
     appData.loveDates = appData.loveDates.filter(d=>d!==dateStr);
+  }
+  saveAndRender();
+}
+function toggleWorkoutDate() {
+  const dateStr = document.getElementById('pop-cal-date').value;
+  if(!dateStr) return;
+  if(!appData.workoutDates) appData.workoutDates = [];
+  const checked = document.getElementById('pop-workout-toggle').checked;
+  if(checked) {
+    if(!appData.workoutDates.includes(dateStr)) appData.workoutDates.push(dateStr);
+  } else {
+    appData.workoutDates = appData.workoutDates.filter(d=>d!==dateStr);
   }
   saveAndRender();
 }
@@ -2357,7 +2383,8 @@ function buildCalendarGrid(year, month) {
     if(isOther) numColor = 'rgba(42,39,50,.28)';
     const isPeriod = (appData.periodDates||[]).includes(dateStr);
     const isLove = (appData.loveDates||[]).includes(dateStr);
-    let evHtml = `<div class="cal-num" style="color:${numColor};font-weight:${isToday?800:600};" ${holidayName?`title="${holidayName}"`:''}>${d}${isPeriod?'<span style="font-size:8px;margin-left:2px;opacity:.75;">🍒</span>':''}${isLove?'<span style="font-size:8px;margin-left:2px;opacity:.75;">ღ</span>':''}</div>`;
+    const isWorkout = (appData.workoutDates||[]).includes(dateStr);
+    let evHtml = `<div class="cal-num" style="color:${numColor};font-weight:${isToday?800:600};" ${holidayName?`title="${holidayName}"`:''}>${d}${isPeriod?'<span style="font-size:8px;margin-left:2px;opacity:.75;">🍒</span>':''}${isLove?'<span style="font-size:8px;margin-left:2px;opacity:.75;">ღ</span>':''}${isWorkout?'<span style="font-size:8px;margin-left:2px;opacity:.75;">⚡</span>':''}</div>`;
     const daySlots = isOther ? [] : (slots[dateStr]||[]);
     const maxSlots = daySlots.length;
     for(let s=0;s<maxSlots;s++){
@@ -3528,19 +3555,19 @@ function handleSearch(q) {
   });
   // 나의 일정
   (appData.mineEvents||[]).filter(e=>e.title.toLowerCase().includes(kw)).forEach(e=>{
-    results.push({ icon:'😶', title:e.title, meta:`${fmtDate(e.startDate)}${e.startDate!==e.endDate?' ~ '+fmtDate(e.endDate):''}`, action:()=>switchTab('calendar') });
+    results.push({ icon:'😶', title:e.title, meta:`${fmtDate(e.startDate)}${e.startDate!==e.endDate?' ~ '+fmtDate(e.endDate):''}`, action:()=>jumpToCalendarDate(e.startDate) });
   });
   // 남친 일정
   (appData.bfEvents||[]).filter(e=>e.title.toLowerCase().includes(kw)).forEach(e=>{
-    results.push({ icon:'🐍', title:e.title, meta:`${fmtDate(e.startDate)}${e.startDate!==e.endDate?' ~ '+fmtDate(e.endDate):''}`, action:()=>switchTab('calendar') });
+    results.push({ icon:'🐍', title:e.title, meta:`${fmtDate(e.startDate)}${e.startDate!==e.endDate?' ~ '+fmtDate(e.endDate):''}`, action:()=>jumpToCalendarDate(e.startDate) });
   });
   // 같이 일정
   (appData.togetherEvents||[]).filter(e=>e.title.toLowerCase().includes(kw)).forEach(e=>{
-    results.push({ icon:'💑', title:e.title, meta:`${fmtDate(e.startDate)}${e.startDate!==e.endDate?' ~ '+fmtDate(e.endDate):''}`, action:()=>switchTab('calendar') });
+    results.push({ icon:'💑', title:e.title, meta:`${fmtDate(e.startDate)}${e.startDate!==e.endDate?' ~ '+fmtDate(e.endDate):''}`, action:()=>jumpToCalendarDate(e.startDate) });
   });
   // 학교 일정
   (appData.schoolEvents||[]).filter(e=>e.title.toLowerCase().includes(kw)).forEach(e=>{
-    results.push({ icon:'🏫', title:e.title, meta:`${fmtDate(e.startDate)}${e.startDate!==e.endDate?' ~ '+fmtDate(e.endDate):''}`, action:()=>switchTab('calendar') });
+    results.push({ icon:'🏫', title:e.title, meta:`${fmtDate(e.startDate)}${e.startDate!==e.endDate?' ~ '+fmtDate(e.endDate):''}`, action:()=>jumpToCalendarDate(e.startDate) });
   });
   // 체험단
   (appData.experiences||[]).filter(e=>e.name.toLowerCase().includes(kw)).forEach(e=>{
